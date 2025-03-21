@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title>Thống Kê Nhân Viên</title>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+.list-group-item {
+  transition: all 0.3s ease-in-out;
+  border: none;
+  border-left: 4px solid transparent;
+}
+
+.list-group-item:hover {
+  background-color: rgba(0, 123, 255, 0.1);
+  border-left: 4px solid #007bff;
+  transform: scale(1.02);
+}
+.nav-item,
+.nav > li {
+  margin-bottom: 10px; /* Khoảng cách giữa các mục */
+}
+
+.nav-link {
+  transition: all 0.3s ease-in-out;
+}
+
+.nav-link:hover {
+  background-color: rgba(0, 123, 255, 0.1);
+  border-left: 4px solid #007bff;
+  transform: scale(1.02);
+}
+.nav-link.active {
+    background-color: transparent !important; /* Xóa màu nền xanh */
+    color: white !important; /* Giữ màu chữ trắng */
+}
+.nav-pills .nav-link {
+    padding: 12px 15px; /* Tăng padding cho liên kết */
+}
+
+.card {
+	transition: 0.3s;
+	border-left: 5px solid #007bff;
+}
+
+.card:hover {
+	transform: scale(1.02);
+	box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+.chart-container {
+	background-color: #ffffff;
+	padding: 20px;
+	border-radius: 15px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	margin-bottom: 30px;
+}
+
+.filter-controls {
+	margin-bottom: 20px;
+}
+
+canvas {
+	width: 100%;
+	height: 400px;
+}
+</style>
+</head>
+
+<body>
+	<div class="d-flex">
+		<div th:insert="~{admin/sidebar :: sidebar}"></div>
+			<div class="p-2 mt-4">
+				<h2 class="text-center">QUẢN LÝ THỐNG KÊ</h2>
+				<hr>
+				<div class="row">
+				<div class="col-md-4">
+					<div class="card p-3 bg-light">
+						<h5>Tổng Số Sản Phẩm</h5>
+						<h3 class="text-primary" th:text="${pr}"></h3>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="card p-3 bg-light">
+						<h5>Tổng Số Khách Hàng</h5>
+						<h3 class="text-success" th:text="${user}"></h3>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="card p-3 bg-light">
+						<h5>Tổng Số Đơn Hàng</h5>
+						<h3 class="text-danger" th:text="${order}"></h3>
+					</div>
+				</div>
+			</div>
+				<div
+					class="filter-controls d-flex flex-wrap justify-content-between align-items-center mb-4 p-3 rounded shadow-sm">
+					<div class="input-group me-2 mb-2" style="max-width: 500px;">
+						<label class="input-group-text bg-primary text-white"
+							for="startDate">Từ ngày:</label> <input type="date"
+							class="form-control" id="startDate">
+					</div>
+					<div class="input-group me-2 mb-2" style="max-width: 500px;">
+						<label class="input-group-text bg-primary text-white"
+							for="endDate">Đến ngày:</label> <input type="date"
+							class="form-control" id="endDate">
+					</div>
+					<button class="btn btn-primary px-4 mb-2">Lọc</button>
+				</div>
+
+
+				<!-- Biểu đồ 1 & 2: Doanh thu theo ngày và Số lượng sản phẩm bán được -->
+				<div class="d-flex gap-4 mb-4">
+					<div class="chart-container flex-fill">
+						<h3>Doanh Thu Theo Ngày</h3>
+						<canvas id="revenueChart"></canvas>
+					</div>
+					<div class="chart-container flex-fill">
+						<h3>Số Lượng Sản Phẩm Theo Loại</h3>
+						<canvas id="productChart"></canvas>
+					</div>
+				</div>
+			</div>
+	</div>
+<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Biểu đồ 1: Doanh thu theo ngày
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+            new Chart(revenueCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ Nhật'],
+                    datasets: [{
+                        label: 'Doanh Thu (VND)',
+                        data: [1000000, 1500000, 2000000, 1800000, 2500000, 3000000, 4000000],
+                        borderColor: '#007bff',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true
+                        }
+                    }
+                }
+            });
+
+            // Biểu đồ 2: Số lượng sản phẩm theo loại
+            const productCtx = document.getElementById('productChart').getContext('2d');
+            new Chart(productCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Giày Thể Thao', 'Giày Chạy Bộ', 'Giày Thời Trang'],
+                    datasets: [{
+                        label: 'Số Lượng Bán',
+                        data: [50, 70, 30],
+                        backgroundColor: ['#007bff', '#28a745', '#ffc107']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

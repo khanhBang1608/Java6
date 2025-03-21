@@ -1,0 +1,181 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<title>Chi Tiết Số Lượng Sản Phẩm</title>
+<meta charset="utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+	crossorigin="anonymous"></script>
+<link rel="stylesheet"
+	href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" />
+<script
+	src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script
+	src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+<style>
+.list-group-item {
+	transition: all 0.3s ease-in-out;
+	border: none;
+	border-left: 4px solid transparent;
+}
+
+.list-group-item:hover {
+	background-color: rgba(0, 123, 255, 0.1);
+	border-left: 4px solid #007bff;
+	transform: scale(1.02);
+}
+
+.nav-item, .nav>li {
+	margin-bottom: 10px; /* Khoảng cách giữa các mục */
+}
+
+.nav-link {
+	transition: all 0.3s ease-in-out;
+}
+
+.nav-link:hover {
+	background-color: rgba(0, 123, 255, 0.1);
+	border-left: 4px solid #007bff;
+	transform: scale(1.02);
+}
+
+.nav-link.active {
+	background-color: transparent !important; /* Xóa màu nền xanh */
+	color: white !important; /* Giữ màu chữ trắng */
+}
+
+.nav-pills .nav-link {
+	padding: 12px 15px; /* Tăng padding cho liên kết */
+}
+
+.card {
+	transition: 0.3s;
+	border-left: 5px solid #007bff;
+}
+
+.card:hover {
+	transform: scale(1.02);
+	box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.chart-container {
+	background-color: #ffffff;
+	padding: 20px;
+	border-radius: 15px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	margin-bottom: 30px;
+}
+
+.filter-controls {
+	margin-bottom: 20px;
+}
+
+canvas {
+	width: 100%;
+	height: 400px;
+}
+</style>
+</head>
+
+<body>
+	<div class="d-flex">
+		<!-- Sidebar -->
+		<div th:insert="~{admin/sidebar :: sidebar}"></div>
+
+		<!-- Main Content -->
+		<div class="container-fluid p-4">
+			<h2 class="text-center">CHI TIẾT SỐ LƯỢNG SẢN PHẨM</h2>
+			<hr>
+			<a th:href="${'/admin/product'}">
+				<button class="btn btn-primary btn-sm mb-2">Quay Lại</button>
+			</a>
+			<!-- Bảng chi tiết số lượng -->
+			<table id="quantityTable"
+				class="table table-striped table-bordered table-hover">
+				<thead class="table-dark">
+					<tr>
+						<th>ID</th>
+						<th>Tên sản phẩm</th>
+						<th>size</th>
+						<th>Số lượng</th>
+						<th>Hành động</th>
+					</tr>
+				</thead>
+				<tbody>
+					<th:block th:each="item : ${productSizeEntities}">
+						<tr>
+							<td th:text="${item.id}"></td>
+							<td th:text="${item.product.name}"></td>
+							<td th:text="${item.size}"></td>
+							<td th:text="${item.stock}"></td>
+							<td>
+								<button class="btn btn-primary btn-sm"
+									th:attr="onclick=|editQuantity('${item.id}', '${item.product.name}', '${item.size}', '${item.stock}')|">
+									Cập nhật</button>
+
+							</td>
+						</tr>
+					</th:block>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div id="editModal" class="modal fade" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Cập nhật số lượng</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<form id="updateForm" method="post"
+						action="/admin/product/size/update">
+						<input type="hidden" id="id" name="productId" value="">
+						<div class="mb-3">
+							<label class="form-label">Tên sản phẩm</label> <input type="text"
+								id="name" class="form-control" readonly>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Size</label> <input type="text"
+								id="size" class="form-control" readonly>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Số lượng mới</label> <input
+								type="number" id="stock" name="stock" class="form-control"
+								required min="1">
+						</div>
+						<button type="submit" class="btn btn-primary">Lưu thay
+							đổi</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		$(document).ready(function() {
+			$('#quantityTable').DataTable();
+		});
+
+		function editQuantity(id, productName, size, stock) {
+			document.getElementById("id").value = id;
+			document.getElementById("name").value = productName;
+			document.getElementById("size").value = size;
+			document.getElementById("stock").value = stock;
+
+			var editModal = new bootstrap.Modal(document
+					.getElementById("editModal"));
+			editModal.show();
+		}
+	</script>
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

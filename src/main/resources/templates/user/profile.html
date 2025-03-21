@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hồ sơ cá nhân</title>
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+/* Hiển thị dropdown khi hover vào nav-item */
+.nav-item.dropdown:hover .custom-dropdown {
+	display: block;
+	opacity: 1;
+	transform: translateY(0);
+	transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+/* Đảm bảo dropdown không bị ẩn khi rê chuột vào dropdown */
+.custom-dropdown {
+	position: absolute;
+	left: 0;
+	width: 100vw;
+	top: 100%;
+	background: white;
+	padding: 20px;
+	opacity: 0;
+	display: none;
+	transform: translateY(10px);
+	transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+	z-index: 1000;
+	border: none;
+}
+
+/* Khi hover vào dropdown thì không bị ẩn */
+.nav-item.dropdown:hover .custom-dropdown, .custom-dropdown:hover {
+	display: block;
+	opacity: 1;
+	transform: translateY(0);
+}
+
+.custom-dropdown .dropdown-header {
+	font-weight: bold;
+	color: black;
+}
+
+.custom-dropdown .dropdown-item {
+	color: #555;
+	font-size: 14px;
+}
+
+.custom-dropdown .dropdown-item:hover {
+	color: black;
+	background: #f8f9fa;
+}
+
+/* Bỏ mũi tên trên dropdown */
+.navbar .nav-item .nav-link.no-arrow::after {
+	display: none !important;
+}
+
+/* Gạch chân khi hover */
+.navbar .nav-item .nav-link:hover {
+	text-decoration: underline;
+}
+
+.search-box {
+	display: flex;
+	align-items: center;
+	border: 1px solid #e0e0e0;
+	/* Nhẹ hơn cho cảm giác hiện đại */
+	border-radius: 30px;
+	/* Tạo góc bo tròn mềm mại */
+	padding: 6px 12px;
+	/* Tạo khoảng cách gọn gàng */
+	width: 200px;
+	/* Kích thước phù hợp */
+	background-color: #f9f9f9;
+	/* Màu nền nhẹ nhàng */
+}
+
+.search-box i {
+	color: #888;
+	/* Màu biểu tượng trung tính */
+	font-size: 1.2rem;
+	/* Biểu tượng kính lúp rõ hơn */
+	margin-right: 8px;
+}
+
+.search-box input {
+	border: none;
+	outline: none;
+	flex-grow: 1;
+	/* Cho phép ô nhập liệu co giãn */
+	font-size: 0.9rem;
+	/* Font nhỏ, tinh tế */
+	background-color: transparent;
+	/* Đồng nhất màu nền */
+}
+
+.search-box input::placeholder {
+	color: #aaa;
+	/* Màu placeholder nhẹ hơn */
+}
+
+.search-box:hover {
+	border-color: #c5c5c5;
+	/* Tạo hiệu ứng khi hover */
+}
+
+.search-box i, .navbar a i {
+	color: #555;
+	/* Màu xám đậm, phù hợp với header */
+	transition: color 0.3s ease;
+	/* Hiệu ứng mượt */
+}
+
+.search-box:hover i, .navbar a:hover i {
+	color: #333;
+	/* Màu đen nhạt khi hover */
+}
+
+.cart-item img {
+	width: 100px;
+	height: auto;
+	border-radius: 10px;
+}
+
+.cart-item {
+	padding: 15px;
+	border-bottom: 1px solid #e5e5e5;
+}
+
+.cart-item .item-name {
+	font-size: 1.2rem;
+	font-weight: bold;
+}
+
+.cart-item .item-price, .cart-item .item-quantity {
+	font-size: 1rem;
+}
+
+.cart-total {
+	font-size: 1.5rem;
+	font-weight: bold;
+}
+
+.footer {
+	background-color: #333;
+	color: #fff;
+	padding: 20px 0;
+	margin-top: 20px;
+}
+
+.footer h5 {
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+
+.footer ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.footer li {
+	margin-bottom: 10px;
+}
+
+.footer a {
+	color: #fff;
+	text-decoration: none;
+}
+
+.footer a:hover {
+	color: #ccc;
+}
+
+.footer p {
+	font-size: 14px;
+	margin-bottom: 10px;
+}
+</style>
+</head>
+<body>
+
+	<div th:insert="~{user/header :: header}"></div>
+
+	<div class="container mt-5">
+		<h2 class="text-center">Hồ Sơ Cá Nhân</h2>
+
+		<!-- Hiển thị thông báo cập nhật thành công -->
+		<div th:if="${successMessage}" class="alert alert-success">
+			<span th:text="${successMessage}"></span>
+		</div>
+
+		<form th:action="@{/user/profile/update}" method="post"
+			th:object="${user}">
+			<!-- Họ và tên -->
+			<div class="mb-3">
+				<label for="name" class="form-label">Họ và Tên:</label> <input
+					type="text" class="form-control" id="name" name="name"
+					th:field="*{name}">
+				<div class="text-danger" th:if="${#fields.hasErrors('name')}"
+					th:errors="*{name}"></div>
+			</div>
+
+			<!-- Email (chỉ hiển thị, không sửa) -->
+			<div class="mb-3">
+				<label for="email" class="form-label">Email:</label> <input
+					type="email" class="form-control" id="email" name="email"
+					th:field="*{email}" readonly>
+			</div>
+
+			<!-- Địa chỉ -->
+			<div class="mb-3">
+				<label for="address" class="form-label">Địa chỉ:</label> <input
+					type="text" class="form-control" id="address" name="address"
+					th:field="*{address}">
+				<div class="text-danger" th:if="${#fields.hasErrors('address')}"
+					th:errors="*{address}"></div>
+			</div>
+
+			<button type="submit" class="btn btn-primary">Lưu Thay Đổi</button>
+		</form>
+
+	</div>
+
+	<div th:insert="~{user/footer :: footer}"></div>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

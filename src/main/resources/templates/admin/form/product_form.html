@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thêm Sản Phẩm</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            font-size: 0.9rem; /* Thu nhỏ kích thước chữ */
+        }
+        .form-container {
+            max-width: 600px; /* Giới hạn chiều rộng */
+            margin: auto;
+        }
+        .form-label {
+            font-size: 0.85rem; /* Thu nhỏ chữ nhãn */
+        }
+        .form-control, .form-select {
+            font-size: 0.85rem; /* Thu nhỏ chữ trong input/select */
+            padding: 0.4rem 0.6rem; /* Giảm padding */
+        }
+        .btn {
+            font-size: 0.85rem; /* Thu nhỏ chữ nút */
+        }
+    </style>
+</head>
+<body>
+    <div class="container p-3">
+        <div class="form-container shadow p-3 rounded bg-light">
+            <h5 class="text-center mb-3">Thêm Sản Phẩm Mới</h5>
+            <form th:object="${productBean}" action="/admin/product/add" method="post" enctype="multipart/form-data">
+                <!-- Product Name -->
+                <th:block th:if="*{id != null}">
+					<input name="id" type="hidden" th:value="*{id.get()}">
+				</th:block>
+                <div class="mb-2">
+                    <label for="name" class="form-label fw-semibold">Tên sản phẩm</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Nhập tên sản phẩm" th:field="*{name}" >
+                    <div class = "text-danger" th:errors = "*{name}"></div>
+                    <div class="text-danger" th:if="${errorName != null}" th:text="${errorName}"></div>
+                </div>
+
+                <!-- Product Description -->
+                <div class="mb-2">
+                    <label for="description" class="form-label fw-semibold">Mô tả</label>
+                    <textarea class="form-control" id="description" name="desc" rows="2" placeholder="Nhập mô tả sản phẩm" th:field="*{desc}" ></textarea>
+                    <div class = "text-danger" th:errors = "*{desc}"></div>
+                </div>
+
+                <!-- Product Price -->
+                <div class="mb-2">
+                    <label for="price" class="form-label fw-semibold">Giá</label>
+                    <input type="number" class="form-control" id="price" name="price" placeholder="Nhập giá sản phẩm" th:field="*{price}" step="1000">
+                    <div class = "text-danger" th:errors = "*{price}"></div>
+                </div>
+				
+				                <!-- Product Quantity Tổng -->
+				<div class="mb-2">
+				    <label for="quantity" class="form-label fw-semibold">Tổng số lượng</label>
+				    <input type="number" class="form-control" id="quantity" name="quantity" placeholder="Nhập tổng số lượng sản phẩm" th:field="*{quantity}">
+				    <div class="text-danger" th:errors="*{quantity}"></div>
+				</div>
+				
+				<!-- Số lượng theo từng size -->
+				<div class="mb-2">
+				    <label class="form-label fw-semibold">Số lượng theo size</label>
+				    <div class="row">
+				        <div class="col">
+				            <label for="size38" class="form-label">Size 38</label>
+				            <input type="number" class="form-control size-input" id="size38" name="size38" value="" th:field="*{size38}">
+				            <div class="text-danger" th:errors="*{size38}"></div>
+				        </div>
+				        <div class="col">
+				            <label for="size39" class="form-label">Size 39</label>
+				            <input type="number" class="form-control size-input" id="size39" name="size39" value="" th:field="*{size39}">
+				            <div class="text-danger" th:errors="*{size39}"></div>
+				        </div>
+				        <div class="col">
+				            <label for="size40" class="form-label">Size 40</label>
+				            <input type="number" class="form-control size-input" id="size40" name="size40" value="" th:field="*{size40}">
+				            <div class="text-danger" th:errors="*{size40}"></div>
+				        </div>
+				    </div>
+				    <div class="row mt-2">
+				        <div class="col">
+				            <label for="size41" class="form-label">Size 41</label>
+				            <input type="number" class="form-control size-input" id="size41" name="size41" value="" th:field="*{size41}">
+				            <div class="text-danger" th:errors="*{size41}"></div>
+				        </div>
+				        <div class="col">
+				            <label for="size42" class="form-label">Size 42</label>
+				            <input type="number" class="form-control size-input" id="size42" name="size42" value="" th:field="*{size42}">
+				            <div class="text-danger" th:errors="*{size42}"></div>
+				        </div>
+				        <div class="col">
+				            <label for="size43" class="form-label">Size 43</label>
+				            <input type="number" class="form-control size-input" id="size43" name="size43" value="" th:field="*{size43}">
+				            <div class="text-danger" th:errors="*{size43}"></div>
+				        </div>
+				    </div>
+				</div>
+				
+				
+                <!-- Product Status -->
+                <div class="mb-2">
+                    <label for="status" class="form-label fw-semibold">Trạng thái</label>
+                    <select class="form-select" id="status" name="status" th:field="*{status}" >
+                        <option value="true">Active</option>
+                        <option value="false">Inactive</option>
+                    </select>
+                </div>
+
+                <!-- Product Category -->
+                <div class="mb-2">
+                    <label for="category" class="form-label fw-semibold">Danh mục</label>
+                    <select  class="form-select form-select-lg" name="category" id="" th:field="*{category}">
+		            	<option selected value="-1">---------Chọn danh mục---------</option>
+		
+		            	<th:block th:each="item : ${category}">
+		              		<option th:value="${item.id}" th:text="${item.name}"></option>
+		            	</th:block>
+		          	</select>
+		          	<div class="text-danger" th:errors="*{category}"></div>
+                </div>
+
+                <!-- Product Image -->
+                <div class="mb-2">
+                    <label for="image" class="form-label fw-semibold">Hình ảnh</label>
+                    <input type="file" class="form-control" id="image" name="images" accept="image/*" multiple th:field="*{images}">
+                    <th:block th:each="item : ${imageEntities}">
+                    	<img th:src="${'/images/'+item.name}" style="width: 50px; height: 50px;">
+                    </th:block>
+                    <div class = "text-danger" th:if="${errorImage != null}" th:text="${errorImage}"></div>
+                </div>
+                
+                
+
+                <!-- Submit and Cancel Buttons -->
+                <div class="mb-2">
+                    <button type="submit" class="btn btn-primary">Thêm sản phẩm</button>
+                    <a href="/admin/product" class="btn btn-secondary">Hủy</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+				    document.getElementById("quantity").addEventListener("input", function() {
+				        let totalQuantity = parseInt(this.value) || 0;
+				        let sizes = document.querySelectorAll(".size-input");
+				        let sizeCount = sizes.length;
+				        
+				        if (totalQuantity > 0) {
+				            let avgQuantity = Math.floor(totalQuantity / sizeCount);
+				            let remainder = totalQuantity % sizeCount;
+				
+				            sizes.forEach((input, index) => {
+				                input.value = avgQuantity + (index < remainder ? 1 : 0);
+				            });
+				        } else {
+				            sizes.forEach(input => input.value = 0);
+				        }
+				    });
+				
+				    document.querySelectorAll(".size-input").forEach(input => {
+				        input.addEventListener("input", function() {
+				            let total = Array.from(document.querySelectorAll(".size-input"))
+				                             .reduce((sum, el) => sum + (parseInt(el.value) || 0), 0);
+				            document.getElementById("quantity").value = total;
+				        });
+				    });
+				</script>
+</body>
+
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác thực OTP</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Xác thực OTP</h2>
+        <p>Nhập mã OTP đã được gửi đến email của bạn.</p>
+        
+        <form action="/register/verify-otp" method="post">
+            <label for="otp">Nhập mã OTP:</label>
+            <input type="text" id="otp" name="otp" required>
+            <button type="submit">Xác nhận</button>
+        </form>
+
+        <p style="color: red;" th:text="${error}"></p>
+        <p style="color: green;" th:text="${success}"></p>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<div th:fragment="sidebar"
+	class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark sidebar"
+	style="width: 280px; min-height: 100vh; height: 100%;">
+	<a href="/admin"
+		class="d-flex align-items-center mb-3 mb-md-0 text-white text-decoration-none">
+		<img th:src="@{/images/Nike.png}" alt="Nike Logo" height="24"
+		class="me-2"> <span class="fs-5 fw-bold">Shoes Auth</span>
+	</a>
+
+	<hr>
+	<ul class="nav nav-pills flex-column mb-auto">
+		<li class="nav-item"><a href="/admin" class="nav-link active"
+			aria-current="page">Trang Chủ</a></li>
+		<li><a href="/admin/product" class="nav-link text-white">Quản
+				Lý Sản Phẩm</a></li>
+		<li><a href="/admin/category" class="nav-link text-white">Quản
+				Lý Danh Mục</a></li>
+		<li><a href="/admin/order" class="nav-link text-white">Quản
+				Lý Đơn Hàng</a></li>
+		<li><a href="/admin/user" class="nav-link text-white">Quản Lý
+				Khách Hàng</a></li>
+	</ul>
+	<div class="dropdown">
+		<a href="#"
+			class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+			id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+			<img src="https://github.com/mdo.png" alt="" width="32" height="32"
+			class="rounded-circle me-2"> <strong>Admin</strong>
+		</a>
+		<ul class="dropdown-menu dropdown-menu-dark text-small shadow"
+			aria-labelledby="dropdownUser1">
+			<li><a class="dropdown-item" href="#">Cài đặt</a></li>
+			<li><a class="dropdown-item" href="#">Hồ sơ</a></li>
+			<li>
+				<hr class="dropdown-divider">
+			</li>
+			<li><a class="dropdown-item" href="/logout">Đăng xuất</a></li>
+		</ul>
+	</div>
+</div>
