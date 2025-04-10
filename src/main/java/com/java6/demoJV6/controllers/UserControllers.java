@@ -11,11 +11,6 @@ public class UserControllers {
 		return "user/index.html";
 	}
 	
-	@GetMapping("/login")
-	public String login(Model model) {
-		return "user/login.html";
-	}
-	
 	@GetMapping("/register/otp")
 	public String registerOtp(Model model) {
 		return "user/otp-form.html";
