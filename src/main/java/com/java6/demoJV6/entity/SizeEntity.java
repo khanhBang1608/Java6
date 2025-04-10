@@ -19,7 +19,7 @@ public class SizeEntity {
 	@Column(name="size_id")
     private int id;
 
-    @Column(name="size_name",nullable = false, unique = true)
+    @Column(name="size_name",nullable = false)
     private String name;
 	   
 }
