@@ -25,6 +25,9 @@ public class ProductEntity {
 
     @Column(name = "price", nullable = false)
     private long price;
+    
+    @Column(name = "status", nullable = false)
+    private boolean status;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
