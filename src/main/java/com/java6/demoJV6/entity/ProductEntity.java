@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 @Entity
+@Table(name = "Product")
 public class ProductEntity {
     @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
