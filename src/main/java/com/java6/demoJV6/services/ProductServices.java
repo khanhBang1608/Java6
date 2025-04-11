@@ -28,6 +28,9 @@ public class ProductServices {
     
     @Autowired
     private ImageJPA imageJPA;
+    
+    @Autowired
+    ImageServices imageServices;
 
     public void createProduct(ProductBean bean) {
     	 ProductEntity entity = new ProductEntity();
@@ -37,16 +40,18 @@ public class ProductServices {
          entity.setPrice(bean.getPrice());
          entity.setStatus(bean.getStatus());
 
-         CategoryEntity category = categoryJPA.findById(bean.getCategoryId()).orElse(null);
-         entity.setCategory(category);
+         Optional<CategoryEntity> category = categoryJPA.findById(bean.getCategoryId());
+         entity.setCategory(category.get());
 
          productJPA.save(entity);
+         
+         List<String> fileNames = imageServices.saveImages(bean.getImages());
 
          List<ImageEntity> images = new ArrayList<>();
-         for (MultipartFile file : bean.getImages()) {
+         for (String filename : fileNames) {
              ImageEntity img = new ImageEntity();
              img.setProduct(entity);
-             img.setName(file.getOriginalFilename()); 
+             img.setName(filename); 
              images.add(img);
          }
 

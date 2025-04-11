@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.java6.demoJV6.bean.CategoryBean;
+import com.java6.demoJV6.dto.CategoryDTO;
 import com.java6.demoJV6.entity.CategoryEntity;
+import com.java6.demoJV6.jpa.CategoryJPA;
 import com.java6.demoJV6.services.CategoryServices;
 import java.util.Map;
 
@@ -28,13 +30,22 @@ import jakarta.validation.Valid;
 public class CategoryController {
 	@Autowired
 	private CategoryServices categoryServices;
+	
+	 @Autowired
+	 private CategoryJPA categoryJPA;
 
 	// Lấy tất cả danh mục
 	@GetMapping("/list")
-	public ResponseEntity<List<CategoryEntity>> getCategories() {
-		List<CategoryEntity> categories = (List<CategoryEntity>) categoryServices.getAllCategories();
-		return ResponseEntity.ok(categories);
-	}
+	public List<CategoryDTO> getAllCategories() {
+    	return categoryJPA.findAll().stream().map(category -> {
+    		CategoryDTO dto = new CategoryDTO();
+    		dto.setId(category.getId());
+    		dto.setName(category.getName());
+    		dto.setStatus(category.isStatus());
+    		return dto;
+    	}).toList();
+        
+    }
 
 	// Thêm mới danh mục
     @PostMapping("/add")
