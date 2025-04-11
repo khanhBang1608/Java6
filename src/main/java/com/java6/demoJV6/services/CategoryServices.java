@@ -14,10 +14,6 @@ public class CategoryServices {
 	@Autowired
 	CategoryJPA categoryJPA;
 
-	public Iterable<CategoryEntity> getAllCategories() {
-		return categoryJPA.findAll();
-	}
-
 	// Tạo mới danh mục
 	public void createCategory(CategoryBean bean) throws IllegalArgumentException {
 	    // Kiểm tra trùng tên khi tạo mới
