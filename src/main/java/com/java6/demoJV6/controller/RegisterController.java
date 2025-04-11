@@ -3,6 +3,7 @@ package com.java6.demoJV6.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import com.java6.demoJV6.bean.RegisterBean;
@@ -10,6 +11,8 @@ import com.java6.demoJV6.entity.UserEntity;
 import com.java6.demoJV6.services.UserService;
 
 import jakarta.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -21,21 +24,31 @@ public class RegisterController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @ModelAttribute RegisterBean registerBean, BindingResult result) {
-    	System.out.println(registerBean);
+        Map<String, String> errors = new HashMap<>();
 
+        // Lỗi validate từ annotation
         if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body("Dữ liệu không hợp lệ.");
+            for (FieldError err : result.getFieldErrors()) {
+                errors.put(err.getField(), err.getDefaultMessage());
+            }
         }
 
+        // Kiểm tra mật khẩu và xác nhận mật khẩu
         if (!registerBean.getPassword().equals(registerBean.getConfirmPassword())) {
-            return ResponseEntity.badRequest().body("Mật khẩu và xác nhận không khớp.");
+            errors.put("confirmPassword", "Mật khẩu và xác nhận không khớp.");
         }
 
+        // Kiểm tra email trùng
         if (userService.isEmailExists(registerBean.getEmail())) {
-            return ResponseEntity.badRequest().body("Email đã được sử dụng.");
+            errors.put("email", "Email đã được sử dụng.");
         }
 
-        UserEntity user = userService.registerUser(registerBean);
+        if (!errors.isEmpty()) {
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        userService.registerUser(registerBean);
         return ResponseEntity.ok().build();
     }
+
 }
