@@ -3,7 +3,6 @@ package com.java6.demoJV6.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import com.java6.demoJV6.bean.RegisterBean;
@@ -21,7 +20,7 @@ public class RegisterController {
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody RegisterBean registerBean, BindingResult result) {
+    public ResponseEntity<?> register(@Valid @ModelAttribute RegisterBean registerBean, BindingResult result) {
     	System.out.println(registerBean);
 
         if (result.hasErrors()) {
