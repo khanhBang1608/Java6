@@ -49,7 +49,7 @@ public class UserEntity {
     private Boolean status;
     
     @Column(name = "reset_token", length = 255)
-    private String resetToken;
+    private String otp;
 
     @Column(name = "otp_expiry")
     private LocalDateTime otpExpiry;
