@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import com.java6.demoJV6.jpa.CategoryJPA;
@@ -32,23 +33,34 @@ public class ProductController {
     	
         return ResponseEntity.ok(categoryJPA.findAll());
     }
-    @GetMapping("/test")
-    public String testCategory() {
-        List<CategoryEntity> list = categoryJPA.findAll();
-        System.out.println("DANH MỤC: " + list);
-        return "Tìm thấy " + list.size() + " danh mục!";
-    }
-
 
     @PostMapping("/add")
     public ResponseEntity<?> addProduct(@Valid @ModelAttribute ProductBean productBean, BindingResult result) {
         if (result.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
-            result.getFieldErrors().forEach(err -> errors.put(err.getField(), err.getDefaultMessage()));
+            for (FieldError err : result.getFieldErrors()) {
+                errors.put(err.getField(), err.getDefaultMessage());
+            }
             return ResponseEntity.badRequest().body(errors);
         }
 
         productService.createProduct(productBean);
         return ResponseEntity.ok().build();
     }
+//    @PostMapping("/update/{id}")
+//    public ResponseEntity<?> updateProduct(
+//            @PathVariable("id") Integer id,
+//            @Valid @ModelAttribute ProductBean productBean,
+//            BindingResult result) {
+//
+//        if (result.hasErrors()) {
+//            Map<String, String> errors = new HashMap<>();
+//            result.getFieldErrors().forEach(err -> errors.put(err.getField(), err.getDefaultMessage()));
+//            return ResponseEntity.badRequest().body(errors);
+//        }
+//
+//        productService.updateProduct(id, productBean);
+//        return ResponseEntity.ok().build();
+//    }
+
 }

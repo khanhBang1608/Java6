@@ -1,6 +1,6 @@
-package com.java6.demoJV6.beans;
+package com.java6.demoJV6.bean;
 
-import com.java6.demoJV6.beans.LoginBean;
+import com.java6.demoJV6.bean.LoginBean;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

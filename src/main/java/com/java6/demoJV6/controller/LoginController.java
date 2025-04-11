@@ -1,4 +1,4 @@
-package com.java6.demoJV6.controllers;
+package com.java6.demoJV6.controller;
 
 import org.springframework.stereotype.Controller;
 
