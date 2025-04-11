@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.java6.demoJV6.bean.RegisterBean;
 import com.java6.demoJV6.entity.UserEntity;
 import com.java6.demoJV6.jpa.UserJPA;
+import com.java6.demoJV6.utils.PasswordUtil;
 
 @Service
 public class UserService {
@@ -17,19 +18,24 @@ public class UserService {
     private UserJPA userJPA;
 
     // Đăng ký tài khoản mới
-    public UserEntity registerUser(RegisterBean registerBean) {
-        UserEntity user = new UserEntity();
-        user.setEmail(registerBean.getEmail());
-        user.setPassword(registerBean.getPassword()); // Nên mã hóa mật khẩu trước khi lưu
-        user.setName(registerBean.getFullName());
-        user.setDateCreated(LocalDateTime.now());
-        user.setStatus(true); // Mặc định là hoạt động
-        user.setRole(1); // Mặc định role 1 là người dùng thường
-        user.setAvatar(null); // Có thể cập nhật sau
-        user.setOtp(null);
-        user.setOtpExpiry(null);
-        return userJPA.save(user);
-    }
+
+public UserEntity registerUser(RegisterBean registerBean) {
+    UserEntity user = new UserEntity();
+    user.setEmail(registerBean.getEmail());
+
+    // Mã hóa mật khẩu bằng SHA-256
+    String hashedPassword = PasswordUtil.hashPassword(registerBean.getPassword());
+    user.setPassword(hashedPassword);
+
+    user.setName(registerBean.getFullName());
+    user.setDateCreated(LocalDateTime.now());
+    user.setStatus(true);
+    user.setRole(1);
+    user.setAvatar(null);
+    user.setOtp(null);
+    user.setOtpExpiry(null);
+    return userJPA.save(user);
+}
 
     // Kiểm tra email đã tồn tại
     public boolean isEmailExists(String email) {
