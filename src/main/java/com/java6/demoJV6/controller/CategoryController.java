@@ -36,24 +36,29 @@ public class CategoryController {
 		return ResponseEntity.ok(categories);
 	}
 
-	@PostMapping("/add")
-	public ResponseEntity<?> addCategory(@Valid @RequestBody CategoryBean categoryBean, BindingResult result) {
-		if (result.hasErrors()) {
-			Map<String, String> errors = new HashMap<>();
-			for (FieldError err : result.getFieldErrors()) {
-				errors.put(err.getField(), err.getDefaultMessage());
-			}
-			return ResponseEntity.badRequest().body(errors);
-		}
+	// Thêm mới danh mục
+    @PostMapping("/add")
+    public ResponseEntity<?> addCategory(@Valid @RequestBody CategoryBean categoryBean, BindingResult result) {
+        if (result.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            for (FieldError err : result.getFieldErrors()) {
+                errors.put(err.getField(), err.getDefaultMessage());
+            }
+            return ResponseEntity.badRequest().body(errors);
+        }
 
-		categoryServices.createCategory(categoryBean);
-		return ResponseEntity.ok().build();
-	}
+        try {
+            categoryServices.createCategory(categoryBean);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
 	
-	// Cập nhật danh mục
+ // Cập nhật danh mục
     @PostMapping("/update/{id}")
-    public ResponseEntity<?> updateCategory(@PathVariable("id") Integer id, 
-                                            @Valid @RequestBody CategoryBean categoryBean, 
+    public ResponseEntity<?> updateCategory(@PathVariable("id") Integer id,
+                                            @Valid @RequestBody CategoryBean categoryBean,
                                             BindingResult result) {
         if (result.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
@@ -63,7 +68,11 @@ public class CategoryController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        categoryServices.updateCategory(id, categoryBean);
-        return ResponseEntity.ok().build();
+        try {
+            categoryServices.updateCategory(id, categoryBean);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 }
