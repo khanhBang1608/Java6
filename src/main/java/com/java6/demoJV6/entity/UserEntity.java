@@ -29,27 +29,33 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY) 
     @Column(name = "user_id", nullable = false)
     private Integer id;
-
-    @Column(name = "password", nullable = false, length = 100)
-    private String password;
-
-    @Column(name = "name", nullable = false, columnDefinition = "NVARCHAR(50)")
+    
+    @Column(name = "full_name", nullable = false, columnDefinition = "NVARCHAR(100)")
     private String name;
+
+    @Column(name = "password", nullable = false, length = 255)
+    private String password;
+    
+    @Column(name = "date_created")
+    private LocalDateTime dateCreated;
+    
+    @Column(name = "avatar", length = 255)
+    private String avatar;
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
-
-    @Column(name = "address", nullable = false, columnDefinition = "NVARCHAR(250)")
-    private String address;
-
+    
     @Column(name = "role", nullable = false)
     private Integer role;
 
     @Column(name = "status", nullable = false)
     private Boolean status;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<AddressEntity> addresses;
     
-    @Column(name = "reset_token", length = 255)
-    private String resetToken;
+    @Column(name = "otp", length = 255)
+    private String otp;
 
     @Column(name = "otp_expiry")
     private LocalDateTime otpExpiry;
