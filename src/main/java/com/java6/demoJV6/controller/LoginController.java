@@ -1,6 +1,5 @@
 package com.java6.demoJV6.controller;
 
-import com.java6.demoJV6.bean.LoginBean;
 import com.java6.demoJV6.services.UserService;
 import com.java6.demoJV6.utils.PasswordUtil;
 
