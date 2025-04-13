@@ -2,7 +2,6 @@ package com.java6.demoJV6.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -15,15 +14,12 @@ import com.java6.demoJV6.services.CartService;
 import com.java6.demoJV6.services.EmailService;
 import com.java6.demoJV6.services.UserService;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 @RestController
