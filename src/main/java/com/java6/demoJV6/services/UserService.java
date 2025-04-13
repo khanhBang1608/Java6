@@ -56,6 +56,11 @@ public UserEntity registerUser(RegisterBean registerBean) {
     public Optional<UserEntity> findById(Integer id) {
         return userJPA.findById(id);
     }
+    
+    public UserEntity findUserByEmail(String email) {
+        return userJPA.findByEmail(email).orElse(null);
+    }
+
 
     // Xóa user theo ID
     public void deleteById(Integer id) {
