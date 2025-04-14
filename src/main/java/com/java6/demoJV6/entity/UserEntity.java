@@ -42,7 +42,7 @@ public class UserEntity {
     @Column(name = "avatar", length = 255)
     private String avatar;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "email", nullable = false)
     private String email;
     
     @Column(name = "role", nullable = false)
