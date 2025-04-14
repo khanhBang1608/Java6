@@ -13,25 +13,24 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.java6.demoJV6.jpa.ImageJPA;
 
-
 @Service
 public class ImageServices {
 	@Autowired
 	ImageJPA imageJPA;
-	
+
 	public List<String> saveImages(List<MultipartFile> files) {
-        List<String> fileNames = new ArrayList<>();
-        try {
-            Path filePath = Paths.get("images");
-            Files.createDirectories(filePath);
+		List<String> fileNames = new ArrayList<>();
+		try {
+			Path filePath = Paths.get("images");
+			Files.createDirectories(filePath);
 
-            for (MultipartFile file : files) { 
-            	if (file.isEmpty()) {
-                    continue; 
-                }
-                String fileName = String.format("%s.%s", (new Date()).getTime(), file.getContentType().split("/")[1]);
+			for (MultipartFile file : files) {
+				if (file.isEmpty()) {
+					continue;
+				}
+				String fileName = String.format("%s.%s", (new Date()).getTime(), file.getContentType().split("/")[1]);
 
-                Files.copy(file.getInputStream(), filePath.resolve(fileName));
+				Files.copy(file.getInputStream(), filePath.resolve(fileName));
 
                 fileNames.add(fileName);
                 
@@ -41,6 +40,26 @@ public class ImageServices {
             e.printStackTrace();
         }
 
-        return fileNames;
-    }
+		return fileNames;
+	}
+
+	public String saveImage(MultipartFile file) {
+		try {
+			if (file.isEmpty()) {
+				return null;
+			}
+
+			Path filePath = Paths.get("images");
+			Files.createDirectories(filePath);
+
+			String fileName = String.format("%s.%s", (new Date()).getTime(), file.getContentType().split("/")[1]);
+
+			Files.copy(file.getInputStream(), filePath.resolve(fileName));
+
+			return fileName;
+		} catch (Exception e) {
+			e.printStackTrace(); // Log lỗi
+			return null;
+		}
+	}
 }
