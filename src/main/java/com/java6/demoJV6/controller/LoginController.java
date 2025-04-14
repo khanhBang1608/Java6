@@ -1,8 +1,10 @@
 package com.java6.demoJV6.controller;
 
+import com.java6.demoJV6.dto.LoginResponseDTO;
+import com.java6.demoJV6.dto.UserDTO;
+import com.java6.demoJV6.entity.UserEntity;
 import com.java6.demoJV6.services.UserService;
 import com.java6.demoJV6.utils.PasswordUtil;
-import com.java6.demoJV6.entity.UserEntity;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -10,26 +12,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @RestController
 @RequestMapping("/api/login")
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true") // Chỉ giữ cái này nếu Vue chạy tại 5173
 public class LoginController {
 
     @Autowired
     private UserService userService;
 
     @PostMapping
-    public ResponseEntity<?> login(
-            @RequestParam("email") String email,
+    public ResponseEntity<?> login(@RequestParam("email") String email,
             @RequestParam("password") String password,
             HttpServletResponse response) {
 
         return userService.findByEmail(email).map(user -> {
 
-            // Kiểm tra trạng thái tài khoản
             if (!user.getStatus()) {
                 return ResponseEntity.badRequest().body("Tài khoản của bạn đã bị khóa.");
             }
@@ -37,29 +34,32 @@ public class LoginController {
             String hashedPassword = PasswordUtil.hashPassword(password);
 
             if (user.getPassword().equals(hashedPassword)) {
+                // Tạo token tạm thời (nên dùng JWT nếu cần)
+                String token = "mock-token-" + user.getId();
+
                 // Tạo cookie
-                String token = "dummy-token"; // Nếu bạn dùng JWT thì thay ở đây
                 Cookie cookie = new Cookie("token", token);
                 cookie.setHttpOnly(true);
                 cookie.setPath("/");
                 cookie.setMaxAge(24 * 60 * 60); // 1 ngày
-
                 response.addCookie(cookie);
 
-                // Tạo response JSON
-                Map<String, Object> userInfo = new HashMap<>();
-                userInfo.put("id", user.getUserId());
-                userInfo.put("email", user.getEmail());
-                userInfo.put("fullname", user.getName());
+                // Convert sang DTO
+                UserDTO userDTO = new UserDTO(
+                        user.getId(),
+                        user.getName(),
+                        user.getEmail(),
+                        user.getAvatar(),
+                        user.getStatus(),
+                        user.getRole());
 
-                Map<String, Object> responseMap = new HashMap<>();
-                responseMap.put("token", token);     // 👈 Đúng định dạng Vue cần
-                responseMap.put("user", userInfo);   // 👈 Đúng định dạng Vue cần
+                // Trả về response chứa token và thông tin người dùng
+                return ResponseEntity.ok(new LoginResponseDTO(token, userDTO));
 
-                return ResponseEntity.ok(responseMap);
             } else {
                 return ResponseEntity.badRequest().body("Sai mật khẩu");
             }
+
         }).orElse(ResponseEntity.badRequest().body("Email không tồn tại"));
     }
 }
