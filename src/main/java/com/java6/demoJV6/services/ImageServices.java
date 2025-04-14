@@ -38,7 +38,7 @@ public class ImageServices {
                 Thread.sleep(5);
             }
         } catch (Exception e) {
-            
+            e.printStackTrace();
         }
 
         return fileNames;

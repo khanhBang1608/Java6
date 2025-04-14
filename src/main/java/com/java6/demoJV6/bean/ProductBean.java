@@ -31,6 +31,25 @@ public class ProductBean {
 
     private Boolean status = true;
 
-    @Size(min = 1, message = "Vui lòng chọn ít nhất một ảnh")
     private List<MultipartFile> images;
+    
+    public String validateImageFiles() {
+        long totalSize = 0;
+        long size = (2 * 1024 * 1024);
+        for (MultipartFile file : images) {
+            totalSize += file.getSize();
+        }
+        if (images.size() < 3) {
+            return "Bạn phải thêm ít nhất 3 ảnh";
+        }
+
+        
+        if (totalSize > size) {
+            return "Tổng dung lượng ảnh không được vượt quá 2MB";
+        }
+
+        
+
+        return null;
+    }
 }
