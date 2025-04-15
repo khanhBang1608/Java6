@@ -32,13 +32,13 @@ public class ImageServices {
 
 				Files.copy(file.getInputStream(), filePath.resolve(fileName));
 
-                fileNames.add(fileName);
-                
-                Thread.sleep(5);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+				fileNames.add(fileName);
+
+				Thread.sleep(5);
+			}
+		} catch (Exception e) {
+
+		}
 
 		return fileNames;
 	}
