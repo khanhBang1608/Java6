@@ -16,5 +16,6 @@ public class ProductDTO {
     private long price;
     private Boolean status;
     private String categoryName;
+    private int categoryId;
     private List<String> imageNames;
 }
