@@ -46,6 +46,12 @@ public UserEntity registerUser(RegisterBean registerBean) {
     public Optional<UserEntity> findByEmail(String email) {
         return userJPA.findByEmail(email);
     }
+    
+    public boolean isEmailExistsForOtherUsers(String email, Integer currentUserId) {
+        Optional<UserEntity> userOpt = userJPA.findByEmail(email);
+        return userOpt.isPresent() && !userOpt.get().getId().equals(currentUserId);
+    }
+
 
     // Lưu user (update hoặc thêm mới)
     public UserEntity save(UserEntity user) {
