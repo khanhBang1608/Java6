@@ -14,7 +14,7 @@ import com.java6.demoJV6.services.AddressService;
 @RestController
 @RequestMapping("/api/addresses")
 @CrossOrigin(origins = "http://localhost:5173") // Vue port
-public class AddressRestController {
+public class AddressController {
 
     @Autowired
     private AddressJPA addressjpa;
