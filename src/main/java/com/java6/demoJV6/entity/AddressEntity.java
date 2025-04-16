@@ -1,5 +1,7 @@
 package com.java6.demoJV6.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,6 +20,7 @@ public class AddressEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+//    @JsonIgnore
     private UserEntity user;
 
     @Column(name = "customer_name", nullable = false, columnDefinition = "NVARCHAR(100)")
