@@ -29,10 +29,6 @@ public class Java6Application {
                 sizeJPA.save(new SizeEntity(0, "42"));
                 sizeJPA.save(new SizeEntity(0, "43"));
                 sizeJPA.save(new SizeEntity(0, "44"));
-
-
             }
         };
     }
-
-}

@@ -28,7 +28,9 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) 
     @Column(name = "user_id", nullable = false)
+
     private Integer id;
+
     
     @Column(name = "full_name", nullable = false, columnDefinition = "NVARCHAR(100)")
     private String name;
