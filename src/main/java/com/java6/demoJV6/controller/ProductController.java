@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import com.java6.demoJV6.jpa.CategoryJPA;
 import com.java6.demoJV6.jpa.ImageJPA;
 import com.java6.demoJV6.jpa.ProductJPA;
+import com.java6.demoJV6.jpa.ProductSizeJPA;
+import com.java6.demoJV6.jpa.SizeJPA;
 import com.java6.demoJV6.services.ProductServices;
 
 import jakarta.validation.Valid;
@@ -22,8 +25,13 @@ import jakarta.validation.Valid;
 import com.java6.demoJV6.dto.CategoryDTO;
 import com.java6.demoJV6.dto.ImageDTO;
 import com.java6.demoJV6.dto.ProductDTO;
+import com.java6.demoJV6.dto.ProductSizeDTO;
+import com.java6.demoJV6.dto.SizeDTO;
 import com.java6.demoJV6.bean.ProductBean;
+import com.java6.demoJV6.bean.ProductSizeBean;
 import com.java6.demoJV6.entity.ProductEntity;
+import com.java6.demoJV6.entity.ProductSizeEntity;
+import com.java6.demoJV6.entity.SizeEntity;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -41,6 +49,12 @@ public class ProductController {
     
     @Autowired
     private ImageJPA imageJPA;
+    
+    @Autowired
+    private SizeJPA sizeJPA;
+    
+    @Autowired
+    private ProductSizeJPA productSizeJPA;
 
     @GetMapping("/categories")
     public List<CategoryDTO> getAllCategories() {
@@ -139,6 +153,25 @@ public class ProductController {
         }).toList();
     }
 
+    
+
+    @GetMapping("/sizes")
+    public ResponseEntity<?> getSizes(@RequestParam("productId") int productId) {
+        List<ProductSizeEntity> list = productSizeJPA.findByProductId(productId);
+        List<ProductSizeDTO> result = list.stream().map(productSize -> {
+            ProductSizeDTO dto = new ProductSizeDTO();
+            dto.setId(productSize.getId());
+            dto.setSizeName(productSize.getSize().getName());
+            dto.setStock(productSize.getStock());
+            return dto;
+        }).toList();
+
+        return ResponseEntity.ok(result);
+    }
+
+    
+
+
     @PostMapping("/image/delete")
     public ResponseEntity<?> deleteImage(@RequestParam("id") Integer id) {
         if (id == null) {
@@ -153,4 +186,45 @@ public class ProductController {
             return ResponseEntity.status(500).body("Lỗi khi xóa ảnh");
         }
     }
+    
+    @GetMapping("/size")
+    public List<SizeDTO> getAllSizes() {
+        List<SizeEntity> list = sizeJPA.findAll();
+        return list.stream().map(size -> {
+            SizeDTO dto = new SizeDTO();
+            dto.setId(size.getId());
+            dto.setName(size.getName());
+            return dto;
+        }).toList();
+    }
+    
+    @PostMapping("/productSize/add")
+    public ResponseEntity<?> addMultipleSizes(@RequestBody List<ProductSizeBean> sizeBeans) {
+        for (ProductSizeBean bean : sizeBeans) {
+            Optional<ProductEntity> productEntity = productJPA.findById(bean.getProductId());
+            Optional<SizeEntity> sizeEntity = sizeJPA.findById(bean.getSizeId());
+
+
+            ProductEntity product = productEntity.get();
+            SizeEntity size = sizeEntity.get();
+
+            ProductSizeEntity existing = productSizeJPA.findByProductIdAndSizeId(bean.getProductId(), bean.getSizeId());
+
+            if (existing != null) {
+                existing.setStock(existing.getStock() + bean.getStock());
+                productSizeJPA.save(existing);
+            } else {
+                ProductSizeEntity newSize = new ProductSizeEntity();
+                newSize.setProduct(product);
+                newSize.setSize(size);
+                newSize.setStock(bean.getStock());
+                productSizeJPA.save(newSize);
+            }
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
+
+
 }
