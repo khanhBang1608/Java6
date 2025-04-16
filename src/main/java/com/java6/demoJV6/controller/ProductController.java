@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import com.java6.demoJV6.jpa.CategoryJPA;
 import com.java6.demoJV6.jpa.ImageJPA;
 import com.java6.demoJV6.jpa.ProductJPA;
+import com.java6.demoJV6.jpa.ProductSizeJPA;
 import com.java6.demoJV6.services.ProductServices;
 
 import jakarta.validation.Valid;
@@ -22,8 +23,10 @@ import jakarta.validation.Valid;
 import com.java6.demoJV6.dto.CategoryDTO;
 import com.java6.demoJV6.dto.ImageDTO;
 import com.java6.demoJV6.dto.ProductDTO;
+import com.java6.demoJV6.dto.ProductSizeDTO;
 import com.java6.demoJV6.bean.ProductBean;
 import com.java6.demoJV6.entity.ProductEntity;
+import com.java6.demoJV6.entity.ProductSizeEntity;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -41,6 +44,9 @@ public class ProductController {
     
     @Autowired
     private ImageJPA imageJPA;
+    
+    @Autowired
+    private ProductSizeJPA productSizeJPA;
 
     @GetMapping("/categories")
     public List<CategoryDTO> getAllCategories() {
@@ -139,5 +145,20 @@ public class ProductController {
         }).toList();
     }
     
+
+    @GetMapping("/sizes")
+    public ResponseEntity<?> getSizes(@RequestParam("productId") int productId) {
+        List<ProductSizeEntity> list = productSizeJPA.findByProductId(productId);
+        List<ProductSizeDTO> result = list.stream().map(productSize -> {
+            ProductSizeDTO dto = new ProductSizeDTO();
+            dto.setId(productSize.getId());
+            dto.setSizeName(productSize.getSize().getName());
+            dto.setStock(productSize.getStock());
+            return dto;
+        }).toList();
+
+        return ResponseEntity.ok(result);
+    }
+
     
 }
