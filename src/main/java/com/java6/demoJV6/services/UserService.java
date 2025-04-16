@@ -1,7 +1,9 @@
 package com.java6.demoJV6.services;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -72,4 +74,22 @@ public UserEntity registerUser(RegisterBean registerBean) {
     public void deleteById(Integer id) {
         userJPA.deleteById(id);
     }
+    
+    // Lấy tất cả người dùng
+    public List<UserEntity> findAllUsers() {
+        List<UserEntity> users = userJPA.findAll();
+        return users.stream()
+                    .filter(user -> user.getRole() != 0) 
+                    .collect(Collectors.toList());
+    }
+    public UserEntity updateUserStatus(Integer userId, boolean status) {
+        Optional<UserEntity> userOpt = userJPA.findById(userId);
+        if (userOpt.isPresent()) {
+            UserEntity user = userOpt.get();
+            user.setStatus(status);
+            return userJPA.save(user);
+        }
+        return null;
+    }
+
 }

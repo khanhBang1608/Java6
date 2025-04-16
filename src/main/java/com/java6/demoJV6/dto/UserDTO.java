@@ -12,4 +12,6 @@ public class UserDTO {
     private String avatar;
     private boolean status;
     private Integer role;
+    
+    
 }
