@@ -144,6 +144,7 @@ public class ProductController {
             return dto;
         }).toList();
     }
+
     
 
     @GetMapping("/sizes")
@@ -161,4 +162,21 @@ public class ProductController {
     }
 
     
+
+
+    @PostMapping("/image/delete")
+    public ResponseEntity<?> deleteImage(@RequestParam("id") Integer id) {
+        if (id == null) {
+            return ResponseEntity.badRequest().body("Missing id parameter");
+        }
+
+        try {
+            // Xóa ảnh theo ID
+            imageJPA.deleteById(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Lỗi khi xóa ảnh");
+        }
+    }
+
 }
