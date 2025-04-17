@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.java6.demoJV6.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -19,9 +20,6 @@ import com.java6.demoJV6.services.ProductServices;
 
 import jakarta.validation.Valid;
 
-import com.java6.demoJV6.dto.CategoryDTO;
-import com.java6.demoJV6.dto.ImageDTO;
-import com.java6.demoJV6.dto.ProductDTO;
 import com.java6.demoJV6.bean.ProductBean;
 import com.java6.demoJV6.entity.ProductEntity;
 
@@ -53,6 +51,25 @@ public class ProductController {
         }).toList();
     }
 
+//    @GetMapping("/products")
+//    public List<ProductDTO> getAllProducts() {
+//        List<ProductEntity> list = productJPA.findAll();
+//        return list.stream().map(product -> {
+//            ProductDTO dto = new ProductDTO();
+//            dto.setId(product.getId());
+//            dto.setName(product.getName());
+//            dto.setDescription(product.getDescription());
+//            dto.setPrice(product.getPrice());
+//            dto.setStatus(product.isStatus());
+//            dto.setCategoryName(product.getCategory() != null ? product.getCategory().getName() : null);
+//            dto.setImageNames(product.getImages() != null ?
+//                product.getImages().stream().map(image -> image.getName()).toList() :
+//                new ArrayList<>()
+//            );
+//            return dto;
+//        }).toList();
+//    }
+
     @GetMapping("/products")
     public List<ProductDTO> getAllProducts() {
         List<ProductEntity> list = productJPA.findAll();
@@ -64,13 +81,28 @@ public class ProductController {
             dto.setPrice(product.getPrice());
             dto.setStatus(product.isStatus());
             dto.setCategoryName(product.getCategory() != null ? product.getCategory().getName() : null);
-            dto.setImageNames(product.getImages() != null ? 
-                product.getImages().stream().map(image -> image.getName()).toList() : 
-                new ArrayList<>()
+            dto.setImageNames(product.getImages() != null ?
+                    product.getImages().stream().map(image -> image.getName()).toList() :
+                    new ArrayList<>()
             );
+
+            // Lấy danh sách ProductSizeDTO
+            List<ProductSizeDTO> sizeDTOs = product.getProductSizes() != null ?
+                    product.getProductSizes().stream().map(ps -> {
+                        SizeDTO sizeDTO = new SizeDTO(
+                                ps.getSize().getId(),
+                                ps.getSize().getName()
+                        );
+                        return new ProductSizeDTO(ps.getId(), sizeDTO, ps.getStock());
+                    }).toList()
+                    : new ArrayList<>();
+
+            dto.setProductSizes(sizeDTOs);
+
             return dto;
         }).toList();
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getProductById(@PathVariable("id") Integer id) {

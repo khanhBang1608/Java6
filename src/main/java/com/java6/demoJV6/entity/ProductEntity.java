@@ -35,12 +35,15 @@ public class ProductEntity {
 
     @ManyToOne 
     @JoinColumn(name = "category_id")
+    @JsonIgnore
     private CategoryEntity category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<ImageEntity> images;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<ProductSizeEntity> productSizes;
 
 }

@@ -18,4 +18,5 @@ public class ProductDTO {
     private String categoryName;
     private int categoryId;
     private List<String> imageNames;
+    private List<ProductSizeDTO> productSizes;
 }

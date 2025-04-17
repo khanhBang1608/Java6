@@ -3,7 +3,12 @@ package com.java6.demoJV6.services;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import com.java6.demoJV6.dto.ProductDTO;
+import com.java6.demoJV6.dto.ProductSizeDTO;
+import com.java6.demoJV6.dto.SizeDTO;
+import com.java6.demoJV6.entity.SizeEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +34,30 @@ public class ProductServices {
 
     @Autowired
     private ImageServices imageServices;
+
+//    public List<ProductDTO> getAllProductDTOs() {
+//        List<ProductEntity> products = productJPA.findAll();
+//
+//        return products.stream().map(product -> {
+//            List<String> imageNames = product.getImages().stream()
+//                    .map(ImageEntity::getFileName)
+//                    .collect(Collectors.toList());
+//
+//            List<ProductSizeDTO> sizeDTOs = product.getProductSizes().stream().map(productSize -> {
+//                SizeEntity size = productSize.getSize();
+//                SizeDTO sizeDTO = new SizeDTO(size.getId(), size.getName());
+//                return new ProductSizeDTO(productSize.getId(), sizeDTO, productSize.getStock());
+//            }).collect(Collectors.toList());
+//
+//            return new ProductDTO(
+//                    product.getId(),
+//                    product.getName(),
+//                    product.getPrice(),
+//                    imageNames,
+//                    sizeDTOs
+//            );
+//        }).collect(Collectors.toList());
+//    }
 
     public void createProduct(ProductBean bean) {
         ProductEntity entity = new ProductEntity();

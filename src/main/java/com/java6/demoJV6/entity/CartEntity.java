@@ -2,8 +2,7 @@ package com.java6.demoJV6.entity;
 
 import java.util.List;
 
-import com.java6.demoJV6.entity.CartDetailEntity;
-import com.java6.demoJV6.entity.UserEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -35,9 +34,11 @@ public class CartEntity {
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     private UserEntity user;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<CartDetailEntity> cartDetails;
 }
 

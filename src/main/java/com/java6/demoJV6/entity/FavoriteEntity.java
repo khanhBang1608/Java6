@@ -1,5 +1,6 @@
 package com.java6.demoJV6.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.java6.demoJV6.entity.FavoriteEntity;
 
 import jakarta.persistence.Column;
@@ -35,6 +36,7 @@ public class FavoriteEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
+    @JsonIgnore
     private ProductEntity product;
 }
 

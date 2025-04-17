@@ -35,5 +35,6 @@ public class CategoryEntity {
     private boolean status = true;
     
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<ProductEntity> products;
 }

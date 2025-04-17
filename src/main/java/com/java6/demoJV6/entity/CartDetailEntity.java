@@ -1,5 +1,6 @@
 package com.java6.demoJV6.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,6 +28,7 @@ public class CartDetailEntity {
 
     @ManyToOne
     @JoinColumn(name = "cart_id", nullable = false)
+    @JsonIgnore
     private CartEntity cart;
 
     @ManyToOne
@@ -35,4 +37,5 @@ public class CartDetailEntity {
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
+
 }
