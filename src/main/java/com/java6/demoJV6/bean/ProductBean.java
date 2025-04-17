@@ -34,6 +34,9 @@ public class ProductBean {
     private List<MultipartFile> images;
     
     public String validateImageFiles() {
+    	if (images == null || images.isEmpty()) {
+            return "Bạn phải thêm ít nhất 3 ảnh";
+        }
         long totalSize = 0;
         long size = (2 * 1024 * 1024);
         for (MultipartFile file : images) {
@@ -50,18 +53,21 @@ public class ProductBean {
 
         return null;
     }
-//    public String validateImageFiles2() {
-//        long totalSize = 0;
-//        long size = (2 * 1024 * 1024);
-//        for (MultipartFile file : images) {
-//            totalSize += file.getSize();
-//        }
-//
-//        
-//        if (totalSize > size) {
-//            return "Tổng dung lượng ảnh không được vượt quá 2MB";
-//        } 
-//
-//        return null;
-//    }
+    public String validateImageFiles2() {
+    	if (images == null || images.isEmpty()) {
+            return null;
+        }
+        long totalSize = 0;
+        long size = (2 * 1024 * 1024);
+        for (MultipartFile file : images) {
+            totalSize += file.getSize();
+        }
+
+        
+        if (totalSize > size) {
+            return "Tổng dung lượng ảnh không được vượt quá 2MB";
+        } 
+
+        return null;
+    }
 }

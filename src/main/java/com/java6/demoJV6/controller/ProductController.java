@@ -155,11 +155,10 @@ public class ProductController {
         }
         
         
-//        String imageError = productBean.validateImageFiles2();
-//        if (imageError != null) {
-//            errors.put("images", imageError);
-//        }
-//        
+        String imageError = productBean.validateImageFiles2();
+        if (imageError != null) {
+            errors.put("images", imageError);
+        }
 
         if (!errors.isEmpty()) {
             return ResponseEntity.badRequest().body(errors);
