@@ -24,13 +24,10 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    // Lấy tất cả người dùng
     @GetMapping("/users")
     public List<UserDTO> getAllUsers() {
-        // Lấy danh sách người dùng từ service
         List<UserEntity> users = userService.findAllUsers();
 
-        // Chuyển đổi từ UserEntity sang UserDTO
         return users.stream()
                    .map(user -> new UserDTO(
                         user.getId(),
@@ -55,6 +52,6 @@ public class UserController {
                 updatedUser.getRole()
             );
         }
-        return null;  // Or handle error case as needed
+        return null; 
     }
 }
