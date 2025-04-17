@@ -1,16 +1,11 @@
 package com.java6.demoJV6.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import com.java6.demoJV6.jpa.CategoryJPA;
@@ -20,24 +15,18 @@ import com.java6.demoJV6.jpa.ProductSizeJPA;
 import com.java6.demoJV6.jpa.SizeJPA;
 import com.java6.demoJV6.services.ProductServices;
 
-import jakarta.validation.Valid;
 
 import com.java6.demoJV6.dto.CategoryDTO;
-import com.java6.demoJV6.dto.ImageDTO;
 import com.java6.demoJV6.dto.ProductDTO;
 import com.java6.demoJV6.dto.ProductSizeDTO;
-import com.java6.demoJV6.dto.SizeDTO;
-import com.java6.demoJV6.bean.ProductBean;
-import com.java6.demoJV6.bean.ProductSizeBean;
 import com.java6.demoJV6.entity.CategoryEntity;
 import com.java6.demoJV6.entity.ProductEntity;
 import com.java6.demoJV6.entity.ProductSizeEntity;
-import com.java6.demoJV6.entity.SizeEntity;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/api/product")
-public class ProductController {
+@RequestMapping("/api")
+public class UserProductController {
 
     @Autowired
     private ProductServices productService;
@@ -124,63 +113,7 @@ public class ProductController {
 
         return ResponseEntity.ok(dto);
     }
-
-    @PostMapping("/add")
-    public ResponseEntity<?> addProduct(@Valid @ModelAttribute ProductBean productBean, BindingResult result) {
-    	Map<String, String> errors = new HashMap<>();
-        for (FieldError err : result.getFieldErrors()) {
-            errors.put(err.getField(), err.getDefaultMessage());
-        }
-        
-     
-        String imageError = productBean.validateImageFiles();
-        if (imageError != null) {
-            errors.put("images", imageError);
-        }
-
-        if (!errors.isEmpty()) {
-            return ResponseEntity.badRequest().body(errors);
-        }
-
-        productService.createProduct(productBean);
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/update/{id}")
-    public ResponseEntity<?> updateProduct(@PathVariable("id") int id,
-            @Valid @ModelAttribute ProductBean productBean, BindingResult result) {
-        Map<String, String> errors = new HashMap<>();
-        for (FieldError err : result.getFieldErrors()) {
-            errors.put(err.getField(), err.getDefaultMessage());
-        }
-        
-        
-//        String imageError = productBean.validateImageFiles2();
-//        if (imageError != null) {
-//            errors.put("images", imageError);
-//        }
-//        
-
-        if (!errors.isEmpty()) {
-            return ResponseEntity.badRequest().body(errors);
-        }
-
-        productService.updateProduct(id, productBean);
-        return ResponseEntity.ok().build();
-    }
     
-    @GetMapping("/images")
-    public List<ImageDTO> getAllImage(@RequestParam("productId") int productId) {
-        return imageJPA.findAllImageByProductId(productId).stream().map(image -> {
-            ImageDTO dto = new ImageDTO();
-            dto.setId(image.getId());
-            dto.setName(image.getName());
-            return dto;
-        }).toList();
-    }
-
-    
-
     @GetMapping("/sizes")
     public ResponseEntity<?> getSizes(@RequestParam("productId") int productId) {
         List<ProductSizeEntity> list = productSizeJPA.findByProductId(productId);
@@ -194,63 +127,4 @@ public class ProductController {
 
         return ResponseEntity.ok(result);
     }
-
-    
-
-
-    @PostMapping("/image/delete")
-    public ResponseEntity<?> deleteImage(@RequestParam("id") Integer id) {
-        if (id == null) {
-            return ResponseEntity.badRequest().body("Missing id parameter");
-        }
-
-        try {
-            // Xóa ảnh theo ID
-            imageJPA.deleteById(id);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Lỗi khi xóa ảnh");
-        }
-    }
-    
-    @GetMapping("/size")
-    public List<SizeDTO> getAllSizes() {
-        List<SizeEntity> list = sizeJPA.findAll();
-        return list.stream().map(size -> {
-            SizeDTO dto = new SizeDTO();
-            dto.setId(size.getId());
-            dto.setName(size.getName());
-            return dto;
-        }).toList();
-    }
-    
-    @PostMapping("/productSize/add")
-    public ResponseEntity<?> addMultipleSizes(@RequestBody List<ProductSizeBean> sizeBeans) {
-        for (ProductSizeBean bean : sizeBeans) {
-            Optional<ProductEntity> productEntity = productJPA.findById(bean.getProductId());
-            Optional<SizeEntity> sizeEntity = sizeJPA.findById(bean.getSizeId());
-
-
-            ProductEntity product = productEntity.get();
-            SizeEntity size = sizeEntity.get();
-
-            ProductSizeEntity existing = productSizeJPA.findByProductIdAndSizeId(bean.getProductId(), bean.getSizeId());
-
-            if (existing != null) {
-                existing.setStock(existing.getStock() + bean.getStock());
-                productSizeJPA.save(existing);
-            } else {
-                ProductSizeEntity newSize = new ProductSizeEntity();
-                newSize.setProduct(product);
-                newSize.setSize(size);
-                newSize.setStock(bean.getStock());
-                productSizeJPA.save(newSize);
-            }
-        }
-
-        return ResponseEntity.ok().build();
-    }
-
-
-
 }

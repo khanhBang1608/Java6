@@ -39,6 +39,20 @@ public class AddressController {
             return dto;
         }).toList();
     }
+ // Lấy danh sách địa chỉ theo userId
+    @GetMapping("/admin/{userId}")
+    public List<AddressDTO> getAddressesByUserIdAdmin(@PathVariable Integer userId) {
+        List<AddressEntity> entities = addressjpa.findByUserId(userId);
+        return entities.stream().map(address -> {
+            AddressDTO dto = new AddressDTO();
+            dto.setId(address.getId());
+            dto.setCustomerName(address.getCustomerName());
+            dto.setPhone(address.getPhone());
+            dto.setAddress(address.getAddress());
+            dto.setUserId(address.getUser().getId().toString());
+            return dto;
+        }).toList();
+    }
 
 
     // Thêm địa chỉ
