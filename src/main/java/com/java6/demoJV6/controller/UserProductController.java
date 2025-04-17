@@ -18,6 +18,7 @@ import com.java6.demoJV6.services.ProductServices;
 
 import com.java6.demoJV6.dto.CategoryDTO;
 import com.java6.demoJV6.dto.ProductDTO;
+import com.java6.demoJV6.dto.ProductDetailDTO;
 import com.java6.demoJV6.dto.ProductSizeDTO;
 import com.java6.demoJV6.entity.CategoryEntity;
 import com.java6.demoJV6.entity.ProductEntity;
@@ -85,34 +86,38 @@ public class UserProductController {
         }).toList();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/productne/{id}")
     public ResponseEntity<?> getProductById(@PathVariable("id") Integer id) {
         Optional<ProductEntity> product = productJPA.findById(id);
         if (product.isEmpty()) return ResponseEntity.notFound().build();
 
         ProductEntity p = product.get();
-        ProductDTO dto = new ProductDTO();
+        ProductDetailDTO dto = new ProductDetailDTO();
         dto.setId(p.getId());
         dto.setName(p.getName());
         dto.setDescription(p.getDescription());
         dto.setPrice(p.getPrice());
-        dto.setStatus(p.isStatus());
-        // Convert CategoryEntity to CategoryDTO
-        if (p.getCategory() != null) {
-            CategoryEntity category = p.getCategory();
-            CategoryDTO categoryDTO = new CategoryDTO();
-            categoryDTO.setId(category.getId());
-            categoryDTO.setName(category.getName());
-            categoryDTO.setStatus(category.isStatus());
-            dto.setCategory(categoryDTO); // Gán đúng kiểu
-            dto.setCategoryName(category.getName()); // Tuỳ bạn có dùng thêm không
-        }
 
-        dto.setCategoryName(p.getCategory() != null ? p.getCategory().getName() : null);
-        dto.setImageNames(p.getImages().stream().map(image -> image.getName()).toList());
+        // Lấy danh sách tên ảnh
+        dto.setImageNames(
+            p.getImages().stream()
+             .map(image -> image.getName())
+             .toList()
+        );
+
+        // Lấy danh sách size và tồn kho
+        List<ProductSizeDTO> sizeDTOs = p.getProductSizes().stream()
+            .map(ps -> new ProductSizeDTO(
+                ps.getSize().getId(),
+                ps.getSize().getName(),
+                ps.getStock()
+            ))
+            .toList();
+        dto.setSizes(sizeDTOs);
 
         return ResponseEntity.ok(dto);
     }
+
     
     @GetMapping("/sizes")
     public ResponseEntity<?> getSizes(@RequestParam("productId") int productId) {
