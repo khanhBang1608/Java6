@@ -1,5 +1,6 @@
 package com.java6.demoJV6.controller;
 
+import com.java6.demoJV6.component.JwtUtil;
 import com.java6.demoJV6.dto.LoginResponseDTO;
 import com.java6.demoJV6.dto.UserDTO;
 import com.java6.demoJV6.entity.UserEntity;
@@ -20,46 +21,38 @@ public class LoginController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     @PostMapping
     public ResponseEntity<?> login(@RequestParam("email") String email,
-            @RequestParam("password") String password,
-            HttpServletResponse response) {
+                                   @RequestParam("password") String password,
+                                   HttpServletResponse response) {
 
         return userService.findByEmail(email).map(user -> {
-
             if (!user.getStatus()) {
-                return ResponseEntity.badRequest().body("Tài khoản của bạn đã bị khóa.");
+                return ResponseEntity.badRequest().body("Tài khoản đã bị khóa");
             }
 
-            String hashedPassword = PasswordUtil.hashPassword(password);
+            if (user.getPassword().equals(PasswordUtil.hashPassword(password))) {
+                String token = jwtUtil.generateToken(user.getId(), user.getRole());
 
-            if (user.getPassword().equals(hashedPassword)) {
-                // Tạo token tạm thời (nên dùng JWT nếu cần)
-                String token = "mock-token-" + user.getId();
-
-                // Tạo cookie
+                UserDTO userDTO = new UserDTO(
+                        user.getId(), user.getName(), user.getEmail(),
+                        user.getAvatar(), user.getStatus(), user.getRole());
+                
                 Cookie cookie = new Cookie("token", token);
                 cookie.setHttpOnly(true);
                 cookie.setPath("/");
-                cookie.setMaxAge(24 * 60 * 60); // 1 ngày
+                cookie.setMaxAge(2 * 60 * 60); // 2 tiếng
                 response.addCookie(cookie);
 
-                // Convert sang DTO
-                UserDTO userDTO = new UserDTO(
-                        user.getId(),
-                        user.getName(),
-                        user.getEmail(),
-                        user.getAvatar(),
-                        user.getStatus(),
-                        user.getRole());
 
-                // Trả về response chứa token và thông tin người dùng
                 return ResponseEntity.ok(new LoginResponseDTO(token, userDTO));
-
             } else {
-                return ResponseEntity.badRequest().body("Đăng nhập Không thành công.!");
+                return ResponseEntity.badRequest().body("Đăng nhập không thành công.!");
             }
-
         }).orElse(ResponseEntity.badRequest().body("Email không tồn tại"));
     }
+
 }

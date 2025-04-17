@@ -134,6 +134,12 @@ public class ProductController {
             errors.put(err.getField(), err.getDefaultMessage());
         }
         
+        
+//        String imageError = productBean.validateImageFiles2();
+//        if (imageError != null) {
+//            errors.put("images", imageError);
+//        }
+//        
 
         if (!errors.isEmpty()) {
             return ResponseEntity.badRequest().body(errors);
