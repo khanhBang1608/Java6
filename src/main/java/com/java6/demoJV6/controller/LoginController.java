@@ -3,7 +3,6 @@ package com.java6.demoJV6.controller;
 import com.java6.demoJV6.component.JwtUtil;
 import com.java6.demoJV6.dto.LoginResponseDTO;
 import com.java6.demoJV6.dto.UserDTO;
-import com.java6.demoJV6.entity.UserEntity;
 import com.java6.demoJV6.services.UserService;
 import com.java6.demoJV6.utils.PasswordUtil;
 import jakarta.servlet.http.Cookie;

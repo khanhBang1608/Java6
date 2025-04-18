@@ -250,6 +250,34 @@ public class ProductController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/productSize/delete") 
+    public ResponseEntity<?> deleteProductSize(@RequestParam("id") Integer id) {
+    	try {
+            productSizeJPA.deleteByProductSizeID(id); 
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    	return null;
+    }
+    
+    @PostMapping("/productSize/update")
+    public ResponseEntity<?> updateProductSize(@RequestBody Map<String, Object> payload) {
+        try {
+            int id =  (int) payload.get("id");
+            int stock =  (int) payload.get("stock");
 
+            Optional<ProductSizeEntity> productSize = productSizeJPA.findById(id);
+            
+
+            productSize.get().setStock(stock);
+            productSizeJPA.save(productSize.get());
+
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 }
