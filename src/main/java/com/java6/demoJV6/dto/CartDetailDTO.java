@@ -13,4 +13,5 @@ public class CartDetailDTO {
 	private ProductDTO product;
 	private ProductSizeDTO productSize;
 	private int quantity;
+	private CategoryDTO category;
 }

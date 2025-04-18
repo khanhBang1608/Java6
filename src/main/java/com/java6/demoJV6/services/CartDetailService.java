@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.java6.demoJV6.dto.CartDTO;
 import com.java6.demoJV6.dto.CartDetailDTO;
+import com.java6.demoJV6.dto.CategoryDTO;
 import com.java6.demoJV6.dto.ProductDTO;
 import com.java6.demoJV6.dto.ProductSizeDTO;
 import com.java6.demoJV6.entity.CartDetailEntity;
@@ -93,6 +94,7 @@ public class CartDetailService {
         productDTO.setId(entity.getProductSize().getProduct().getId());
         productDTO.setName(entity.getProductSize().getProduct().getName());
         productDTO.setPrice(entity.getProductSize().getProduct().getPrice());
+        productDTO.setStatus(entity.getProductSize().getProduct().isStatus());
         productDTO.setImageNames(
         	    entity.getProductSize() != null &&
         	    entity.getProductSize().getProduct() != null &&
@@ -103,6 +105,13 @@ public class CartDetailService {
         	);
 
         dto.setProduct(productDTO);
+        
+        //category DTO
+        CategoryDTO cateDTO = new CategoryDTO();
+        cateDTO.setStatus(entity.getProductSize().getProduct().getCategory().isStatus());
+        cateDTO.setName(entity.getProductSize().getProduct().getCategory().getName());
+        
+        dto.setCategory(cateDTO);
 
         // ✅ ProductSizeDTO
         ProductSizeDTO sizeDTO = new ProductSizeDTO();
