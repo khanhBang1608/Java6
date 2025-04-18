@@ -108,7 +108,7 @@ public class UserProductController {
         // Lấy danh sách size và tồn kho
         List<ProductSizeDTO> sizeDTOs = p.getProductSizes().stream()
             .map(ps -> new ProductSizeDTO(
-                ps.getSize().getId(),
+                ps.getId(),
                 ps.getSize().getName(),
                 ps.getStock()
             ))
