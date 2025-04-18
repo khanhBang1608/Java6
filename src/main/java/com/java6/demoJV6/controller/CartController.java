@@ -1,6 +1,5 @@
 package com.java6.demoJV6.controller;
 
-import com.java6.demoJV6.dto.CartDTO;
 import com.java6.demoJV6.dto.CartDetailDTO;
 import com.java6.demoJV6.entity.CartDetailEntity;
 import com.java6.demoJV6.entity.CartEntity;
@@ -12,7 +11,6 @@ import com.java6.demoJV6.services.CartService;
 import com.java6.demoJV6.services.ProductSizeService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,92 +59,70 @@ public class CartController {
                 quantity
         );
 
-        CartDetailDTO dto = cartDetailService.toDTO(added); // chuyển sang DTO để trả ra client
+        CartDetailDTO dto = cartDetailService.toDTO(added);
 
         return ResponseEntity.ok(dto);
     }
 
+    @PutMapping("/user/update")
+    public ResponseEntity<?> updateQuantity(
+            @RequestParam("cartId") Integer cartId,
+            @RequestParam("productSizeId") Integer productSizeId,
+            @RequestParam("quantity") int quantity) {
 
+        Optional<CartEntity> optionalCart = cartService.findById(cartId);
+        if (optionalCart.isEmpty()) {
+            return ResponseEntity.badRequest().body("Không tìm thấy giỏ hàng");
+        }
 
-//    @GetMapping("/items")
-//    public ResponseEntity<?> getCartItems(@CookieValue(value = "token") String token) {
-//        try {
-//            Integer userId = 
-//            CartDTO cart = cartService.getCartByUserId(userId);
-//            return ResponseEntity.ok(cart);
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
-//        }
-//    }
+        Optional<ProductSizeEntity> optionalProductSize = productSizeService.findById(productSizeId);
+        if (optionalProductSize.isEmpty()) {
+            return ResponseEntity.badRequest().body("Không tìm thấy sản phẩm size");
+        }
 
+        CartDetailEntity updated = cartDetailService.updateQuantity(optionalCart.get(), optionalProductSize.get(), quantity);
+        if (updated == null) {
+            return ResponseEntity.badRequest().body("Không tồn tại sản phẩm trong giỏ để cập nhật");
+        }
 
-//    @PostMapping("/add")
-//    public ResponseEntity<?> addToCart(
-//            @CookieValue() Integer cartId,
-//            @RequestParam Integer productSizeId,
-//            @RequestParam Integer quantity) {
-//        try {
-//            cartService.addToCart(getUserById(userId), productSizeId, quantity);
-//            return ResponseEntity.ok("Added to cart");
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
-//        }
-//    }
-//
-//    @DeleteMapping("/remove")
-//    public ResponseEntity<?> removeFromCart(
-//            @CookieValue(value = "token") String token,
-//            @RequestParam Integer cartDetailId) {
-//        try {
-//            Integer userId = ExtractToken.extractUserIdFromToken(token);
-//            UserEntity user = getUserById(userId);
-//            cartService.removeCartDetailById(user, cartDetailId);
-//            return ResponseEntity.ok("Removed from cart");
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
-//        }
-//    }
-//
-//    @PutMapping("/update-size")
-//    public ResponseEntity<?> updateSizeInCart(
-//            @CookieValue(value = "token") String token,
-//            @RequestParam Integer cartDetailId,
-//            @RequestParam Integer newSizeId) {
-//        try {
-//            Integer userId = ExtractToken.extractUserIdFromToken(token);
-//            UserEntity user = getUserById(userId);
-//            cartService.updateSizeInCart(user, cartDetailId, newSizeId);
-//            return ResponseEntity.ok("Updated size in cart");
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
-//        }
-//    }
-//
-//    @PutMapping("/update-quantity")
-//    public ResponseEntity<?> updateQuantity(@RequestParam Integer cartDetailId,
-//                                            @RequestParam Integer quantity,
-//                                            @CookieValue("token") String token) {
-//        try {
-//            Integer userId = ExtractToken.extractUserIdFromToken(token);
-//            UserEntity user = getUserById(userId);
-//            cartService.updateQuantityInCart(user, cartDetailId, quantity);
-//            return ResponseEntity.ok("Updated size in cart");
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
-//        }
-//    }
-//
-//
-//    @DeleteMapping("/clear")
-//    public ResponseEntity<?> clearCart(@CookieValue(value = "token") String token) {
-//        try {
-//            Integer userId = ExtractToken.extractUserIdFromToken(token);
-//            UserEntity user = getUserById(userId);
-//            cartService.clearCart(user);
-//            return ResponseEntity.ok("Cleared cart");
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
-//        }
-//    }
+        return ResponseEntity.ok(cartDetailService.toDTO(updated));
+    }
 
+    @DeleteMapping("/user/delete")
+    public ResponseEntity<?> deleteCartItem(
+            @RequestParam("cartId") Integer cartId,
+            @RequestParam("productSizeId") Integer productSizeId) {
+
+        Optional<CartEntity> optionalCart = cartService.findById(cartId);
+        if (optionalCart.isEmpty()) {
+            return ResponseEntity.badRequest().body("Không tìm thấy giỏ hàng");
+        }
+
+        Optional<ProductSizeEntity> optionalProductSize = productSizeService.findById(productSizeId);
+        if (optionalProductSize.isEmpty()) {
+            return ResponseEntity.badRequest().body("Không tìm thấy sản phẩm size");
+        }
+
+        boolean deleted = cartDetailService.deleteByProductSize(optionalCart.get(), optionalProductSize.get());
+        if (!deleted) {
+            return ResponseEntity.badRequest().body("Không tìm thấy sản phẩm trong giỏ để xoá");
+        }
+
+        return ResponseEntity.ok("Đã xoá sản phẩm khỏi giỏ");
+    }
+
+    @GetMapping("/user/view")
+    public ResponseEntity<?> viewCart(@RequestParam("cartId") Integer cartId) {
+        List<CartDetailDTO> list = cartDetailService.getCartDetails(cartId);
+        return ResponseEntity.ok(list);
+    }
+
+    @DeleteMapping("/user/clear")
+    public ResponseEntity<?> clearCart(@RequestParam("cartId") Integer cartId) {
+        boolean cleared = cartDetailService.clearCart(cartId);
+        if (!cleared) {
+            return ResponseEntity.badRequest().body("Giỏ hàng đã trống hoặc không tồn tại");
+        }
+        return ResponseEntity.ok("Đã xoá toàn bộ giỏ hàng");
+    }
 }

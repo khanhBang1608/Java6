@@ -1,6 +1,7 @@
 package com.java6.demoJV6.services;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,38 @@ public class CartDetailService {
         return cartDetailJPA.save(cartDetail); // Thêm mới vào giỏ hàng
     }
 
+    public CartDetailEntity updateQuantity(CartEntity cart, ProductSizeEntity productSize, int quantity) {
+        Optional<CartDetailEntity> existing = cartDetailJPA.findByCartAndProductSize(cart, productSize);
+        if (existing.isPresent()) {
+            CartDetailEntity cartDetail = existing.get();
+            cartDetail.setQuantity(quantity);
+            return cartDetailJPA.save(cartDetail);
+        }
+        return null;
+    }
+
+    public boolean deleteByProductSize(CartEntity cart, ProductSizeEntity productSize) {
+        Optional<CartDetailEntity> existing = cartDetailJPA.findByCartAndProductSize(cart, productSize);
+        if (existing.isPresent()) {
+            cartDetailJPA.delete(existing.get());
+            return true;
+        }
+        return false;
+    }
+
+    public List<CartDetailDTO> getCartDetails(Integer cartId) {
+        List<CartDetailEntity> cartDetails = cartDetailJPA.findByCartId(cartId);
+        return cartDetails.stream().map(this::toDTO).toList();
+    }
+
+    public boolean clearCart(Integer cartId) {
+        List<CartDetailEntity> cartDetails = cartDetailJPA.findByCartId(cartId);
+        if (cartDetails.isEmpty()) return false;
+
+        cartDetailJPA.deleteAll(cartDetails);
+        return true;
+    }
+
     public CartDetailDTO toDTO(CartDetailEntity entity) {
         CartDetailDTO dto = new CartDetailDTO();
         dto.setId(entity.getId());
@@ -59,12 +92,13 @@ public class CartDetailService {
         ProductDTO productDTO = new ProductDTO();
         productDTO.setId(entity.getProductSize().getProduct().getId());
         productDTO.setName(entity.getProductSize().getProduct().getName());
+        productDTO.setPrice(entity.getProductSize().getProduct().getPrice());
         productDTO.setImageNames(
-        	    entity.getProductSize() != null && 
-        	    entity.getProductSize().getProduct() != null && 
-        	    entity.getProductSize().getProduct().getImages() != null && 
-        	    !entity.getProductSize().getProduct().getImages().isEmpty() ? 
-        	    entity.getProductSize().getProduct().getImages().stream().map(image -> image.getName()).toList() : 
+        	    entity.getProductSize() != null &&
+        	    entity.getProductSize().getProduct() != null &&
+        	    entity.getProductSize().getProduct().getImages() != null &&
+        	    !entity.getProductSize().getProduct().getImages().isEmpty() ?
+        	    entity.getProductSize().getProduct().getImages().stream().map(image -> image.getName()).toList() :
         	    new ArrayList<>()
         	);
 
