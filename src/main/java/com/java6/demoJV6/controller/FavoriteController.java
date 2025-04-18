@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/favorites")
-@CrossOrigin(origins = "*") // Cho phép từ frontend
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true") 
 public class FavoriteController {
 
     @Autowired
@@ -39,13 +39,13 @@ public class FavoriteController {
     @PostMapping("/favorites")
     public ResponseEntity<?> addToFavorite(@RequestParam Integer userId, @RequestParam Integer productId) {
         try {
-            FavoriteEntity savedFavorite = favoriteService.addFavorite(userId, productId);
-            return ResponseEntity.ok(savedFavorite);
+            FavoriteDTO savedFavoriteDTO = favoriteService.addFavorite(userId, productId);
+            return ResponseEntity.ok(savedFavoriteDTO);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
+    
     // Xóa sản phẩm khỏi danh sách yêu thích
     @DeleteMapping("/{userId}/{productId}")
     public void removeFavorite(@PathVariable Integer userId, @PathVariable Integer productId) {

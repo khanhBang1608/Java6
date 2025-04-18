@@ -28,7 +28,7 @@ public class FavoriteService {
     @Autowired
     private ProductJPA productJPA;
 
-    // Lấy danh sách các sản phẩm yêu thích của một user
+    
  // Lấy danh sách các sản phẩm yêu thích của một user
     public List<FavoriteDTO> getFavoritesByUser(Integer userId) {
         UserEntity user = userJPA.findById(userId)
@@ -62,8 +62,8 @@ public class FavoriteService {
 
 
 
-    // Thêm một sản phẩm vào danh sách yêu thích của user
-    public FavoriteEntity addFavorite(Integer userId, Integer productId) {
+ // Thêm một sản phẩm vào danh sách yêu thích của user và trả về FavoriteDTO
+    public FavoriteDTO addFavorite(Integer userId, Integer productId) {
         UserEntity user = userJPA.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User không tồn tại"));
         ProductEntity product = productJPA.findById(productId)
@@ -79,9 +79,26 @@ public class FavoriteService {
         FavoriteEntity favorite = new FavoriteEntity();
         favorite.setUser(user);
         favorite.setProduct(product);
-        favorite.setCreatedAt(LocalDateTime.now());  // Thêm thời gian tạo
-        return favoriteJPA.save(favorite); // Đây là phương thức save() từ JpaRepository
+        favorite.setCreatedAt(LocalDateTime.now());
+        FavoriteEntity savedFavorite = favoriteJPA.save(favorite);
+
+        // Tạo và trả về FavoriteDTO
+        FavoriteDTO dto = new FavoriteDTO();
+        dto.setId(savedFavorite.getId().intValue());
+        dto.setUserId(user.getId());
+        dto.setProductId(product.getId());
+        dto.setProductName(product.getName());
+        dto.setProductPrice((double) product.getPrice());
+
+        if (product.getImages() != null && !product.getImages().isEmpty()) {
+            dto.setProductImage(product.getImages().get(0).getName());
+        } else {
+            dto.setProductImage("default-image.jpg");
+        }
+
+        return dto;
     }
+
 
     // Xóa sản phẩm khỏi danh sách yêu thích của user
     public void removeFavorite(Integer userId, Integer productId) {
