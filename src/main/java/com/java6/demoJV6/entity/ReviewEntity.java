@@ -22,9 +22,13 @@ public class ReviewEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "product_id", nullable = false)
+//    private ProductEntity product;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
-    private ProductEntity product;
+    @JoinColumn(name = "order_detail_id", nullable = false)
+    private OrderDetailEntity orderDetail;
 
     @Column(name = "rating")
     private Integer rating;

@@ -16,8 +16,8 @@ public class OrderDetailEntity {
     @Column(name = "order_detail_id")
     private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "order_id")
     private OrderEntity order;
 
     @ManyToOne
