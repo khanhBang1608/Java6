@@ -14,7 +14,7 @@ import com.java6.demoJV6.dto.OrderDTO;
 import com.java6.demoJV6.dto.OrderDetailDTO;
 import com.java6.demoJV6.entity.AddressEntity;
 import com.java6.demoJV6.entity.OrderEntity;
-import com.java6.demoJV6.jpa.OderDetailJPA;
+import com.java6.demoJV6.jpa.OrderDetailJPA;
 import com.java6.demoJV6.jpa.OrderJPA;
 import com.java6.demoJV6.services.OrderService;
 
@@ -27,7 +27,7 @@ public class ManageOrderController {
     private OrderJPA orderJPA;
     
     @Autowired
-    private OderDetailJPA orderDetailJPA;
+    private OrderDetailJPA orderDetailJPA;
     
     @Autowired
     private OrderService orderService;

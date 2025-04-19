@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.java6.demoJV6.entity.OrderDetailEntity;
 
-public interface OderDetailJPA extends JpaRepository<OrderDetailEntity,Integer>{
+public interface OrderDetailJPA extends JpaRepository<OrderDetailEntity,Integer>{
 }
