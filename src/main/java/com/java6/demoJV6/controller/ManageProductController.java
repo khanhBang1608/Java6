@@ -36,8 +36,8 @@ import com.java6.demoJV6.entity.SizeEntity;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/api/product")
-public class ProductController {
+@RequestMapping("/api/admin/product")
+public class ManageProductController {
 
     @Autowired
     private ProductServices productService;

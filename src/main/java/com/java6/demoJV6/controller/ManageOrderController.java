@@ -23,7 +23,7 @@ import com.java6.demoJV6.services.OrderService;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/api/order")
+@RequestMapping("/api/admin/order")
 public class ManageOrderController {
 
     @Autowired

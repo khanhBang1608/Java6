@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/admin")
 public class UserController {
 
     @Autowired
