@@ -49,7 +49,7 @@ public class UserEntity {
     private String email;
     
     @Column(name = "role", nullable = false)
-    private Integer role;
+    private int role;
 
     @Column(name = "status", nullable = false)
     private Boolean status;
@@ -69,7 +69,6 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<FavoriteEntity> favorites;
-    
     
     
     public enum Role {

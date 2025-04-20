@@ -54,7 +54,7 @@ public class AddressController {
         return addressjpa.save(address);
     }
     // Lấy địa chỉ theo ID
-    @GetMapping("/{id}")
+    @GetMapping("/addressId/{id}")
     public AddressDTO getAddressById(@PathVariable Integer id) {
         return addressService.getAddressById(id);
     }
