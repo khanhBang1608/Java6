@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 @RestController
-@RequestMapping("/api/cart")
+@RequestMapping("/api/user/cart")
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class CartController {
 
@@ -37,7 +37,7 @@ public class CartController {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
-    @PostMapping("/user/add")
+    @PostMapping("/add")
     public ResponseEntity<?> addToCart(
             @RequestParam("cartId") Integer cartId,
             @RequestParam("productSizeId") Integer productSizeId,
@@ -64,7 +64,7 @@ public class CartController {
         return ResponseEntity.ok(dto);
     }
 
-    @PutMapping("/user/update")
+    @PutMapping("/update")
     public ResponseEntity<?> updateQuantity(
             @RequestParam("cartId") Integer cartId,
             @RequestParam("productSizeId") Integer productSizeId,
@@ -88,7 +88,7 @@ public class CartController {
         return ResponseEntity.ok(cartDetailService.toDTO(updated));
     }
 
-    @DeleteMapping("/user/delete")
+    @DeleteMapping("/delete")
     public ResponseEntity<?> deleteCartItem(
             @RequestParam("cartId") Integer cartId,
             @RequestParam("productSizeId") Integer productSizeId) {
@@ -111,13 +111,13 @@ public class CartController {
         return ResponseEntity.ok("Đã xoá sản phẩm khỏi giỏ");
     }
 
-    @GetMapping("/user/view")
+    @GetMapping("/view")
     public ResponseEntity<?> viewCart(@RequestParam("cartId") Integer cartId) {
         List<CartDetailDTO> list = cartDetailService.getCartDetails(cartId);
         return ResponseEntity.ok(list);
     }
 
-    @DeleteMapping("/user/clear")
+    @DeleteMapping("/clear")
     public ResponseEntity<?> clearCart(@RequestParam("cartId") Integer cartId) {
         boolean cleared = cartDetailService.clearCart(cartId);
         if (!cleared) {
