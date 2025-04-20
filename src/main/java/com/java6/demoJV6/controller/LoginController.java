@@ -53,5 +53,16 @@ public class LoginController {
             }
         }).orElse(ResponseEntity.badRequest().body("Email không tồn tại"));
     }
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+        Cookie cookie = new Cookie("token", null);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(0); // Xóa cookie bằng cách hết hạn
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok("Đăng xuất thành công!");
+    }
+
 
 }
