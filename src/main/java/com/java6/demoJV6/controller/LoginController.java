@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/login")
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true") // Chỉ giữ cái này nếu Vue chạy tại 5173
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true") 
 public class LoginController {
 
     @Autowired
@@ -43,7 +43,7 @@ public class LoginController {
                 Cookie cookie = new Cookie("token", token);
                 cookie.setHttpOnly(true);
                 cookie.setPath("/");
-                cookie.setMaxAge(2 * 60 * 60); // 2 tiếng
+                cookie.setMaxAge(2 * 60 * 60); 
                 response.addCookie(cookie);
 
 
