@@ -1,29 +1,42 @@
 package com.java6.demoJV6.component;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+
 import org.springframework.stereotype.Component;
 
+import java.util.Base64;
 import java.util.Date;
+
+import javax.crypto.SecretKey;
 
 @Component
 public class JwtUtil {
-    private final String SECRET_KEY = "YOUR_SECRET_KEY";
-    private final long EXPIRATION = 86400000; // 1 ngày
+    private final String BASE64_SECRET_KEY = "5EE34F8872311224A4BEF6814F49F5EE34F8872311224A4BEF6814F49F";
+    private final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(Base64.getDecoder().decode(BASE64_SECRET_KEY));
 
-    public String generateToken(Integer userId, Integer role) {
+    public String generateToken(String email, String role) {
+        // Ensure role has the "ROLE_" prefix
+        if (!role.startsWith("ROLE_")) {
+            role = "ROLE_" + role;
+        }
+    
         return Jwts.builder()
-                .setSubject(String.valueOf(userId))
-                .claim("role", role)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
-                .compact();
+                   .setSubject(email)
+                   .claim("role", role)
+                   .setIssuedAt(new Date())
+                   .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 hours
+                   .signWith(SECRET_KEY)
+                   .compact();
     }
 
-    public Claims validateToken(String token) throws ExpiredJwtException {
-        return Jwts.parser()
-                .setSigningKey(SECRET_KEY)
-                .parseClaimsJws(token)
-                .getBody();
+    public String extractUsername(String token) {
+        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().getSubject();
+        
+    }
+
+    public String extractRole(String token) {
+        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().get("role", String.class);
     }
 }
