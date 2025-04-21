@@ -20,5 +20,8 @@ public interface ReviewJPA extends JpaRepository<ReviewEntity, Long> {
     List<ReviewEntity> findByProductId(@Param("productId") int productId);
 
     boolean existsByOrderDetail_Order_User_IdAndOrderDetail_ProductSize_Product_Id(Integer userId, Integer productId);
+    
+    
+    boolean existsByOrderDetail_Id(int orderDetailId);
 }
 

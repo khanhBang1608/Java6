@@ -67,7 +67,12 @@ public class ReviewController {
         }
     }
 
-
-
+    @GetMapping("/checkReview/{orderDetailId}")
+    public ResponseEntity<Map<String, Object>> checkReview(@PathVariable("orderDetailId") int orderDetailId) {
+        boolean hasReviewed = reviewService.isReviewed(orderDetailId);
+        Map<String, Object> response = new HashMap<>();
+        response.put("hasReviewed", hasReviewed);
+        return ResponseEntity.ok(response);
+    }
 
 }

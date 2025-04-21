@@ -33,6 +33,7 @@ public class OrderService {
         dto.setOrderDate(order.getOrderDate());
         dto.setAddress(order.getAddress());
         dto.setStatus(order.getStatus());
+        dto.setTotalAmount(order.getTotalAmount());
 
         List<OrderItemDTO> items = order.getOrderDetails().stream().map(detail -> {
             OrderItemDTO itemDTO = new OrderItemDTO();

@@ -61,5 +61,9 @@ public class ReviewService {
 
         reviewRepository.save(review);
     }
+    
+    public boolean isReviewed(int orderDetailId) {
+        return reviewRepository.existsByOrderDetail_Id(orderDetailId);
+    }
 
 }
