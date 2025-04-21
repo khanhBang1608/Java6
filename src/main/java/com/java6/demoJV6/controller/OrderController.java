@@ -23,7 +23,7 @@ import com.java6.demoJV6.services.OrderService;
 
 @RestController
 @RequestMapping("/api/user/order")
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true") // thêm allowCredentials để gửi cookie
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true") 
 public class OrderController {
 
     @Autowired
@@ -110,24 +110,10 @@ public class OrderController {
 
     // ✅ Thêm API lấy danh sách đơn hàng dựa vào userId từ cookie
     @GetMapping("/list")
-    public ResponseEntity<?> getOrdersFromCookie(HttpServletRequest request) {
+    public ResponseEntity<?> getOrdersByUserId(@RequestParam("userId") Integer userId) {
         try {
-            String userIdStr = null;
-            for (Cookie cookie : request.getCookies()) {
-                if (cookie.getName().equals("userId")) {
-                    userIdStr = cookie.getValue();
-                    break;
-                }
-            }
-
-            if (userIdStr == null) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Bạn chưa đăng nhập");
-            }
-
-            Integer userId = Integer.parseInt(userIdStr);
             List<OrderEntity> orders = orderJPA.findByUserIdOrderByOrderDateDesc(userId);
 
-            // Chuyển đổi danh sách OrderEntity thành OrderDTO
             List<OrderDTO> orderDTOs = orders.stream().map(order -> {
                 OrderDTO dto = new OrderDTO();
                 dto.setOrderId(order.getId());
@@ -135,7 +121,7 @@ public class OrderController {
                 dto.setStatus(order.getStatus());
                 dto.setTotalAmount(order.getTotalAmount());
                 dto.setAddress(order.getAddress());
-                dto.setUserId(order.getUser().getId()); // mặc dù userId không cần hiển thị nhưng vẫn cần cho API
+                dto.setUserId(order.getUser().getId());
                 return dto;
             }).collect(Collectors.toList());
 
@@ -144,6 +130,4 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi: " + e.getMessage());
         }
     }
-
-
 }

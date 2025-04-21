@@ -54,11 +54,11 @@ public class ManageAddressController {
         address.setId(id);
         return addressjpa.save(address);
     }
-    // Lấy địa chỉ theo ID
-    @GetMapping("/{id}")
-    public AddressDTO getAddressById(@PathVariable Integer id) {
-        return addressService.getAddressById(id);
-    }
+//    // Lấy địa chỉ theo ID
+//    @GetMapping("/{id}")
+//    public AddressDTO getAddressById(@PathVariable Integer id) {
+//        return addressService.getAddressById(id);
+//    }
 
 
     // Xoá địa chỉ
