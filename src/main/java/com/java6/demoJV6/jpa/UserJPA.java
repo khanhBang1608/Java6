@@ -8,4 +8,5 @@ import com.java6.demoJV6.entity.UserEntity;
 
 public interface UserJPA extends JpaRepository<UserEntity,Integer>{
 	Optional<UserEntity> findByEmail(String email);
+
 }

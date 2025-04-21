@@ -12,9 +12,9 @@ import com.java6.demoJV6.jpa.UserJPA;
 import com.java6.demoJV6.services.AddressService;
 
 @RestController
-@RequestMapping("/api/user/addresses")
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
-public class AddressController {
+@RequestMapping("/api/admin/addresses")
+@CrossOrigin(origins = "http://localhost:5173") // Vue port
+public class ManageAddressController {
 
     @Autowired
     private AddressJPA addressjpa;
@@ -25,9 +25,9 @@ public class AddressController {
     @Autowired
     private AddressService addressService;
 
-    // Lấy danh sách địa chỉ theo userId
+ // Lấy danh sách địa chỉ theo userId
     @GetMapping("/{userId}")
-    public List<AddressDTO> getAddressesByUserId(@PathVariable Integer userId) {
+    public List<AddressDTO> getAddressesByUserIdAdmin(@PathVariable Integer userId) {
         List<AddressEntity> entities = addressjpa.findByUserId(userId);
         return entities.stream().map(address -> {
             AddressDTO dto = new AddressDTO();
@@ -39,6 +39,7 @@ public class AddressController {
             return dto;
         }).toList();
     }
+
 
     // Thêm địa chỉ
     @PostMapping("/create")
@@ -54,7 +55,7 @@ public class AddressController {
         return addressjpa.save(address);
     }
     // Lấy địa chỉ theo ID
-    @GetMapping("/addressId/{id}")
+    @GetMapping("/{id}")
     public AddressDTO getAddressById(@PathVariable Integer id) {
         return addressService.getAddressById(id);
     }

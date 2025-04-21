@@ -3,6 +3,7 @@ package com.java6.demoJV6.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -48,7 +49,7 @@ public class UserEntity {
     private String email;
     
     @Column(name = "role", nullable = false)
-    private Integer role;
+    private int role;
 
     @Column(name = "status", nullable = false)
     private Boolean status;
@@ -68,4 +69,33 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<FavoriteEntity> favorites;
+    
+    
+    public enum Role {
+        ADMIN(0),
+        USER(1);
+    
+        private final int value;
+    
+        Role(int value) {
+            this.value = value;
+        }
+    
+        public int getValue() {
+            return value;
+        }
+    
+        public static Role fromValue(int value) {
+            for (Role role : Role.values()) {
+                if (role.getValue() == value) {
+                    return role;
+                }
+            }
+            throw new IllegalArgumentException("Invalid role value: " + value);
+        }
+    }
+    public Role getRoleEnum() {
+        return Role.fromValue(this.role);
+    }
 }
+
