@@ -29,4 +29,7 @@ public class OrderDetailEntity {
 
     @Column(name = "price", nullable = false)
     private Double price;
+    
+    @OneToOne(mappedBy = "orderDetail", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private ReviewEntity review;
 }

@@ -55,10 +55,10 @@ public class ManageAddressController {
         return addressjpa.save(address);
     }
     // Lấy địa chỉ theo ID
-    @GetMapping("/{id}")
-    public AddressDTO getAddressById(@PathVariable Integer id) {
-        return addressService.getAddressById(id);
-    }
+//    @GetMapping("/{id}")
+//    public AddressDTO getAddressById(@PathVariable Integer id) {
+//        return addressService.getAddressById(id);
+//    }
 
 
     // Xoá địa chỉ
