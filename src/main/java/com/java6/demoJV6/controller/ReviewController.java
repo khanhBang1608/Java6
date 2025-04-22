@@ -46,7 +46,7 @@ public class ReviewController {
         List<ReviewResponseDTO> reviews = reviewService.getReviewsByProduct(productId);
         return ResponseEntity.ok(reviews);
     }
-
+    
     @PostMapping
     public ResponseEntity<?> addReview(@RequestBody ReviewRequestDTO dto) {
         reviewService.addReview(dto);
