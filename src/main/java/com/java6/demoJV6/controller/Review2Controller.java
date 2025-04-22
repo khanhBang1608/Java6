@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -26,4 +28,24 @@ public class Review2Controller {
         List<ReviewResponseDTO> reviews = reviewService.getReviewsByProduct(productId);
         return ResponseEntity.ok(reviews);
     }
+    @GetMapping("/product/{productId}/summary")
+    public ResponseEntity<Map<String, Object>> getReviewSummary(@PathVariable Integer productId) {
+        List<ReviewResponseDTO> reviews = reviewService.getReviewsByProduct(productId);
+
+        double averageRating = 0.0;
+        int totalReviews = reviews.size();
+
+        if (totalReviews > 0) {
+            double totalRating = reviews.stream().mapToDouble(ReviewResponseDTO::getRating).sum();
+            averageRating = totalRating / totalReviews;
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("averageRating", averageRating);
+        result.put("totalReviews", totalReviews);
+
+        return ResponseEntity.ok(result);
+    }
+
+
 }
