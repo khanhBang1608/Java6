@@ -9,6 +9,8 @@ import com.java6.demoJV6.jpa.ReviewJPA;
 import com.java6.demoJV6.services.OrderDetailServices;
 import com.java6.demoJV6.services.ReviewService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -24,9 +31,14 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class ReviewController {
 
-    private final ReviewService reviewService;
-    private final ReviewJPA reviewRepository;
-    private final OrderDetailServices orderDetailServices;
+	@Autowired
+    ReviewService reviewService;
+	
+	@Autowired
+	ReviewJPA reviewRepository;
+	
+	@Autowired
+	OrderDetailServices orderDetailServices;
 
 
     @GetMapping("/product/{productId}")
@@ -74,5 +86,24 @@ public class ReviewController {
         response.put("hasReviewed", hasReviewed);
         return ResponseEntity.ok(response);
     }
+    @GetMapping()
+    public ResponseEntity<List<ReviewResponseDTO>> getAllReviewByUserId(@RequestParam  int userId) {
+        List<ReviewEntity> reviews = reviewService.getAllReviewsByUserId(userId);
+        
+        // Convert ReviewEntity to ReviewResponseDTO
+        List<ReviewResponseDTO> reviewResponseDTOs = reviews.stream()
+            .map(review -> new ReviewResponseDTO(
+                review.getOrderDetail().getProductSize().getProduct().getName(), // Assuming ReviewEntity has a reference to Product
+                review.getOrderDetail().getProductSize().getSize().getName(),     // Assuming ReviewEntity has a reference to Size
+                review.getRating(),
+                review.getComment(),
+                review.getUser().getName(), // Assuming ReviewEntity has a reference to User
+                review.getReviewDate()
+            ))
+            .collect(Collectors.toList());
+        
+        return ResponseEntity.ok(reviewResponseDTOs);
+    }
 
+   
 }

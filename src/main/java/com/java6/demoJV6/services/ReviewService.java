@@ -65,5 +65,9 @@ public class ReviewService {
     public boolean isReviewed(int orderDetailId) {
         return reviewRepository.existsByOrderDetail_Id(orderDetailId);
     }
+    
+    public List<ReviewEntity> getAllReviewsByUserId(int userId) {
+        return reviewRepository.findAllByUser_Id(userId);
+    }
 
 }

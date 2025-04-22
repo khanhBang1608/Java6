@@ -23,5 +23,7 @@ public interface ReviewJPA extends JpaRepository<ReviewEntity, Long> {
     
     
     boolean existsByOrderDetail_Id(int orderDetailId);
+    
+    List<ReviewEntity> findAllByUser_Id(int userId);
 }
 
