@@ -69,7 +69,7 @@ public class LoginController {
                } else {
                    return ResponseEntity.badRequest().body("Đăng nhập không thành công.!");
                }
-           }).orElse(ResponseEntity.badRequest().body("Email không tồn tại"));
+           }).orElse(ResponseEntity.badRequest().body("Đăng nhập không thành công.!"));
     }
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {
